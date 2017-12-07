@@ -1,6 +1,6 @@
-# airport
+# PyJet - letališče
 Seminarska naoga pri Podatkovnih bazah 1
 
-Kopija iz repozitorja predmeta
-Shrani spremembe
-Sprememba2
+## ER diagram
+
+![ER diagram](pyjet1.png)
