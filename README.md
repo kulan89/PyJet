@@ -3,4 +3,4 @@ Seminarska naoga pri Podatkovnih bazah 1
 
 ## ER diagram
 
-![ER diagram](diagrami/pyjet.png)
+![ER diagram](diagrami/pyjet3.png)
