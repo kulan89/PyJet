@@ -47,20 +47,27 @@ def dodajPotnika(ime, priimek, emso, drzava):
     VALUES (?,?,?,?)
     """,(ime,priimek,emso,vrniIDdrzave(drzava)[0]))
     con.commit()    
-
-#spodnji funkciji je potrebno spremeniti, glede na spremembe, ki jih bova naredile na bazi
     
-##def steviloSedezev(id_leta):
-##    '''vrne st. sedežev na letalu'''
-##    #za preverjanje zasedenosti (če == 0, je potnik obveščen naj izbere drugi let)
-##    cur.execute("""
-##    SELECT Kapaciteta FROM TipLetala
-##    JOIN Let ON TipLetala.ID = Let.Letalo
-##    WHERE Let.ID = ?""", (id_leta,))
-##    return cur.fetchone()
-##
-##def zasediSedez(id_leta):
-##    '''zasede sedez na letu id_leta'''
+def steviloSedezev(id_leta):
+    '''vrne st. sedežev na letalu'''
+    cur.execute("""
+    SELECT Kapaciteta FROM TipLetala
+    JOIN Let ON TipLetala.ID = Let.Letalo
+    WHERE Let.ID = ?""", (id_leta,))
+    return cur.fetchone()
+
+def preveriZasedenost(id_urnika):
+    '''preveri zasedenost leta z izbranim id-jem urnika'''
+    cur.execute("""
+    SELECT Zasedenost FROM Urnik WHERE ID = ?""", (id_urnika))
+    return cur.fetchone()
+
+def zasediSedez(id_urnika):
+    cur.execute("""
+    UPDATE Urnik
+    SET Zasedenost = ? + 1
+    WHERE ID = ?""",(preveriZasedenost(id_urnika)[0],id_urnika))
+    con.commit()
 
 def urnikInPotnik(id_potnika,id_urnika):
     '''v tabelo Razpored shrani potnika in njegov izbran let'''
