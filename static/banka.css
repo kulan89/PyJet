@@ -1,0 +1,57 @@
+.navigator {
+  height: 30px;
+  font-size: 12px;
+  font-family: Arial
+}
+.napis {
+  margin-right: 10px;
+  margin-top: 2px;
+  font-family: Arial;
+  font-size: 14px;
+}
+.vrstica {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+.napaka {
+  color: #ff0000;
+}
+body {
+  padding-left: 3em;
+}
+.naslov_strani {
+  height: 3em;
+  font-family: Arial;
+  font-size: larger;
+  display: flex;
+  align-items: center;
+}
+.gumb_dodaj {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 0.5em;
+}
+.gumbi {
+  font-family: Arial;
+  font-size: 12px;
+}
+.glava {
+  font-family: Arial;
+  font-size: 14px;
+}
+th {
+  font-family: Arial;
+  text-align: left;
+  font-size: 14px;
+  padding: 5px;
+  border-bottom-color: gray;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+}
+td {
+  font-family: Arial;
+  font-size: 13px;
+  text-align: left;
+  padding: 5px;
+}

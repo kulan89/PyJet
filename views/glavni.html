@@ -1,0 +1,17 @@
+%rebase ('osnova.html', naslov='PyJet', navigator='/')
+    <div class="naslov_strani">
+       PyJet
+    </div>
+	
+    <div class="vrstica">
+		<span class="napis">Izberi odhodno letališče:</span>
+		<form method="get" action="/isci">
+            <select name="odhod" size="5">
+			%for mesto in odhodnaLetalisca:
+				<li>
+					<option value={{mesto}} selected="selected">{{mesto}}</option>
+				</li>
+			%end
+			</select>
+		</form>
+	</div>
