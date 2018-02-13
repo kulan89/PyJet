@@ -2,6 +2,7 @@ import modeli as modeli
 from bottle import *
 from datetime import datetime
 
+
 def pretvoriDatum(x):
     if x is None:
         return None
@@ -10,18 +11,41 @@ def pretvoriDatum(x):
     else:
         return datetime.strftime(x, "%d.%m.%Y")
 
+def dobiSeznamOdhodnihLetalisc():
+    odhodnaLetalisca = modeli.OdhodnaLetalisca()
+    mesta = []
+    for elt in odhodnaLetalisca:
+        mesta.append(elt[0])
+    return mesta
+
+def dobiSeznamPrihodnihLetalisc(izhodisce):
+    prihodnaLetalisca = modeli.PrihodnaLetalisca(izhodisce)
+    mesta = []
+    for elt in prihodnaLetalisca:
+        mesta.append(elt[0])
+    return mesta
+
+
 @get('/')
 def glavniMenu():
-    odhodnaLetalisca = modeli.OdhodnaLetalisca()
-    mesta1 = []
-    for elt in odhodnaLetalisca:
-        mesta1.append(elt[0])
-    return template('glavni.html',odhodnaLetalisca=mesta1)
+    odhodnaLetalisca = dobiSeznamOdhodnihLetalisc()
+    odhodnaLetalisca.insert(0, "Izberi")
+    return template('glavni.html', odhodnaLetalisca=odhodnaLetalisca, prihodnaLetalisca=["Prihodno letališče"])
+
+@post('/')
+def glavniMenu2():
+    odhodnoLetalisce = request.forms.get('odhodnoLetalisce')
+
+    odhodnaLetalisca = dobiSeznamOdhodnihLetalisc()
+    prihodnaLetalisca = dobiSeznamPrihodnihLetalisc(odhodnoLetalisce)
+    return template('glavni.html', prihodoLetalisceOmogoceno=True, izbranoLetalisce=odhodnoLetalisce, odhodnaLetalisca=odhodnaLetalisca, prihodnaLetalisca=prihodnaLetalisca)
 
 @get('/static/<filename:path>')
 def static(filename):
     return static_file(filename, root='static')
 
+
+        
 ##@get('/oseba/<emso>')
 ##def oOsebi(emso):
 ##    napaka = request.query.napaka

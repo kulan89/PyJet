@@ -23,17 +23,36 @@ def OdhodnaLetalisca():
 
 def PrihodnaLetalisca(odhodno):
     '''vrne možna prihodna letališča, glede na izbrano odhodno'''
-    cur.execute("""
-        SELECT ime FROM Destinacije WHERE ID  IN (
-        SELECT Prihod FROM Let WHERE Odhod = ?) """,(poisciIDdestinacije(odhodno)))
-    return cur.fetchall()
 
-def vrniIDleta(prihod,odhod):
+    mesta = ()
+    if odhodno.lower() == "ljubljana":
+        cur.execute("""
+             SELECT ime FROM Destinacije WHERE ime <> 'Ljubljana'
+             """)
+        mesta = cur.fetchall()
+    else:
+        mesta = [('Ljubljana',)]
+    return mesta
+
+def vrniIDleta(odhod, prihod):
     '''vrne ID izbranega leta''' #odhod in prihod sta ID-ja destinacije
     cur.execute("""
         SELECT ID FROM Let
         WHERE Odhod = ? AND Prihod = ?""",(odhod,prihod))
     return cur.fetchone()
+
+def vrniIDleta2(id_urnika):
+    '''vrne ID leta glede na urnik'''
+    cur.execute("""
+        SELECT IDleta FROM Urnik WHERE Urnik.ID = ?""", (id_urnika,))
+    return cur.fetchone()
+
+def vrniIDleta3(odhod, prihod):
+    '''vrne ID izbranega leta za odhod in prihod z imeni destinacij'''
+
+    odhodno = poisciIDdestinacije(odhod)
+    prihodno = poisciIDdestinacije(prihod)
+    return vrniIDleta(odhodno, prihodno)
 
 def vrniIDdrzave(drzava):
     '''vrne ID drzave'''
@@ -42,11 +61,11 @@ def vrniIDdrzave(drzava):
         WHERE Ime = ?""", (drzava,))
     return cur.fetchone()
 
-def dodajPotnika(ime, priimek, emso, drzava):
+def dodajPotnika(ime, priimek, emso, drzava, email):
     cur.execute("""
-        INSERT INTO Potnik (Ime, Priimek, EMSO, IDdrzave)
+        INSERT INTO Potnik (Ime, Priimek, EMSO, IDdrzave, Email)
         VALUES (?,?,?,?)
-        """,(ime,priimek,emso,vrniIDdrzave(drzava)[0]))
+        """,(ime,priimek,emso,vrniIDdrzave(drzava)[0]), email)
     con.commit()    
     
 def steviloSedezev(id_leta):
@@ -64,11 +83,25 @@ def preveriZasedenostSedezev(id_urnika):
     return cur.fetchone()
 
 def zasediSedez(id_urnika):
+    '''zasedemo samo, če imamo prosto mesto'''
+
+    zasedenost = preveriZasedenostSedezev(id_urnika)
+    stSedezev = steviloSedezev(vrniIDleta2(id_urnika))
+    if zasedenost + 1 > stSedezev:
+        return None
+    else:
+        cur.execute("""
+            UPDATE Urnik
+            SET Zasedenost = ? + 1
+            WHERE ID = ?""",(preveriZasedenost(id_urnika)[0],id_urnika))
+        con.commit()
+
+def vrniIDurnika(id_leta, datum):
+    '''vrnemo ID urnika glede na izbran let in datum'''
+
     cur.execute("""
-        UPDATE Urnik
-        SET Zasedenost = ? + 1
-        WHERE ID = ?""",(preveriZasedenost(id_urnika)[0],id_urnika))
-    con.commit()
+        SELECT ID FROM Urnik WHERE IDleta = ? AND Datum = ?""", (id_leta, datum))
+    return cur.fetchone()
 
 def urnikInPotnik(id_potnika,id_urnika):
     '''v tabelo Razpored shrani potnika in njegov izbran let'''
