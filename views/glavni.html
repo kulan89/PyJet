@@ -6,24 +6,26 @@
 
 <div id="destinacija" class="vrstica">
     <span class="napis">Izberi odhodno letališče:</span>
+
     <form id="formOdhod" method="POST">
         <select id="izberiOdhod" name="odhodnoLetalisce" width="50" autofocus required>
-            %for mesto in odhodnaLetalisca:
+            %for mesto_id, mesto in odhodnaLetalisca:
                 <li>
-                    <option value={{mesto}} {{!'selected="selected"' if mesto == get('izbranoLetalisce', '') else ""}}>{{mesto}}</option>
+                    <option value={{mesto_id}} {{!'selected="selected"' if mesto_id == get('izbranoLetalisce', -1) else ""}}>{{mesto}}</option>
                 </li>
             %end
         </select>
     </form>
 
-    <form id="formDestinacija" method="POST">
+    <form id="formDestinacija" method="GET" action="izberiDatum">
+        <input type="hidden" name="odhodnoLetalisce" value={{get('izbranoLetalisce', -1)}} />
         <select name="prihodoLetalisce" style="max-width:90%;" required {{!'disabled' if not get('prihodoLetalisceOmogoceno', False) else ''}}>
-            %for mesto in prihodnaLetalisca:
+            %for mesto_id, mesto in prihodnaLetalisca:
                 <li>
-                    <option value={{mesto}}>{{mesto}}</option>
+                    <option value={{mesto_id}}>{{mesto}}</option>
                 </li>
             %end
         </select>
-        <button type="submit" disable>Potrdi</button>
+        <button type="submit" {{!'disabled' if not get('prihodoLetalisceOmogoceno', False) else ''}}>Potrdi</button>
     </form>
 </div>

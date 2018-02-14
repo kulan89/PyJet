@@ -21,17 +21,48 @@ def OdhodnaLetalisca():
         """)
     return cur.fetchall()
 
-def PrihodnaLetalisca(odhodno):
-    '''vrne možna prihodna letališča, glede na izbrano odhodno'''
+##def OdhodnaLetalisca():
+##    '''vrne možna odhodna letališča'''
+##    cur.execute("""
+##        SELECT ime FROM Destinacije
+##        """)
+##    return cur.fetchall()
 
+def OdhodnaLetalisca():
+    '''vrne možna odhodna letališča'''
+    cur.execute("""
+        SELECT ID,ime FROM Destinacije
+        """)
+    return cur.fetchall()
+
+##def PrihodnaLetalisca(odhodno):
+##    '''vrne možna prihodna letališča, glede na izbrano odhodno'''
+##
+##    mesta = ()
+##    if odhodno.lower() == "ljubljana":
+##        cur.execute("""
+##             SELECT ime FROM Destinacije WHERE ime <> 'Ljubljana'
+##             """)
+##        mesta = cur.fetchall()
+##    else:
+##        mesta = [('Ljubljana',)]
+##    return mesta
+
+
+def PrihodnaLetalisca(odhodnoId):
+    '''vrne možna prihodna letališča, glede na izbrano odhodno'''
     mesta = ()
-    if odhodno.lower() == "ljubljana":
+    if odhodnoId == 1: # (1 == Ljubljana)
+        # iberi vsa letališča razen Ljubljane
         cur.execute("""
-             SELECT ime FROM Destinacije WHERE ime <> 'Ljubljana'
+             SELECT ID,ime FROM Destinacije WHERE ID <> 1
              """)
         mesta = cur.fetchall()
     else:
-        mesta = [('Ljubljana',)]
+        cur.execute("""
+             SELECT ID,ime FROM Destinacije WHERE ID == 1
+             """)
+        mesta = [cur.fetchone()]
     return mesta
 
 def vrniIDleta(odhod, prihod):

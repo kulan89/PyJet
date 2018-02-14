@@ -11,34 +11,44 @@ def pretvoriDatum(x):
     else:
         return datetime.strftime(x, "%d.%m.%Y")
 
+##def dobiSeznamOdhodnihLetalisc():
+##    odhodnaLetalisca = modeli.OdhodnaLetalisca()
+##    mesta = []
+##    for elt in odhodnaLetalisca:
+##        mesta.append(elt[0])
+##    return mesta
+
 def dobiSeznamOdhodnihLetalisc():
     odhodnaLetalisca = modeli.OdhodnaLetalisca()
-    mesta = []
-    for elt in odhodnaLetalisca:
-        mesta.append(elt[0])
-    return mesta
+    return odhodnaLetalisca
 
-def dobiSeznamPrihodnihLetalisc(izhodisce):
-    prihodnaLetalisca = modeli.PrihodnaLetalisca(izhodisce)
-    mesta = []
-    for elt in prihodnaLetalisca:
-        mesta.append(elt[0])
-    return mesta
+##def dobiSeznamPrihodnihLetalisc(izhodisce):
+##    prihodnaLetalisca = modeli.PrihodnaLetalisca(izhodisce)
+##    mesta = []
+##    for elt in prihodnaLetalisca:
+##        mesta.append(elt[0])
+##    return mesta
+
+
+def dobiSeznamPrihodnihLetalisc(izhodisceId):
+    prihodnaLetalisca = modeli.PrihodnaLetalisca(izhodisceId)
+    return prihodnaLetalisca
 
 
 @get('/')
 def glavniMenu():
     odhodnaLetalisca = dobiSeznamOdhodnihLetalisc()
-    odhodnaLetalisca.insert(0, "Izberi")
-    return template('glavni.html', odhodnaLetalisca=odhodnaLetalisca, prihodnaLetalisca=["Prihodno letališče"])
+    odhodnaLetalisca.insert(0, (-1, "Izberi"))
+    return template('glavni.html', odhodnaLetalisca=odhodnaLetalisca, prihodnaLetalisca=[(-1, "Prihodno letališče")])
 
 @post('/')
 def glavniMenu2():
-    odhodnoLetalisce = request.forms.get('odhodnoLetalisce')
+    print(request.forms)
+    odhodnoLetalisceId = int(request.forms.get('odhodnoLetalisce'))
 
     odhodnaLetalisca = dobiSeznamOdhodnihLetalisc()
-    prihodnaLetalisca = dobiSeznamPrihodnihLetalisc(odhodnoLetalisce)
-    return template('glavni.html', prihodoLetalisceOmogoceno=True, izbranoLetalisce=odhodnoLetalisce, odhodnaLetalisca=odhodnaLetalisca, prihodnaLetalisca=prihodnaLetalisca)
+    prihodnaLetalisca = dobiSeznamPrihodnihLetalisc(odhodnoLetalisceId)
+    return template('glavni.html', prihodoLetalisceOmogoceno=True, izbranoLetalisce=odhodnoLetalisceId, odhodnaLetalisca=odhodnaLetalisca, prihodnaLetalisca=prihodnaLetalisca)
 
 @get('/static/<filename:path>')
 def static(filename):
