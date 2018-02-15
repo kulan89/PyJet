@@ -19,6 +19,7 @@
 
     <form id="formDestinacija" method="GET" action="izberiDatum">
         <input type="hidden" name="odhodnoLetalisce" value={{get('izbranoLetalisce', -1)}} />
+        <span class="napis">Izberi prihodno letališče:</span>
         <select name="prihodoLetalisce" style="max-width:90%;" required {{!'disabled' if not get('prihodoLetalisceOmogoceno', False) else ''}}>
             %for mesto_id, mesto in prihodnaLetalisca:
                 <li>

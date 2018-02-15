@@ -54,6 +54,26 @@ def glavniMenu2():
 def static(filename):
     return static_file(filename, root='static')
 
+@get('/dodajPotnika')
+def dodajNovegaPotnika():
+    return template('novPotnik.html', ime = None, priimek = None, emso = None,
+                        ulica = None, hisna_st = None, postna_st = None,
+                        kraj = None, napaka = None)
+
+@post('/dodaj')
+def dodaj():
+    ime = request.forms.ime
+    priimek = request.forms.priimek
+    emso = request.forms.emso
+    drzava = request.forms.drzava
+    email = request.forms.email
+    try:
+        if not modeli.dodajPotnika(ime, priimek, emso, drzava, email):
+            modeli.dodajPotnika(ime, priimek, emso, drzava, email)
+    except Exception as e:
+        return template('novPotnik.html', ime = ime, priimek = priimek, emso = emso,
+                        drzava = drzava, email = email, napaka = e)
+
 
         
 ##@get('/oseba/<emso>')
