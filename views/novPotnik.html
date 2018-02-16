@@ -1,0 +1,68 @@
+%rebase ('osnova.html', naslov='Nov potnik', navigator='/ novPotnik')
+
+    <div class="naslov_strani">
+       Vnesi podatke o potniku
+    </div>
+    
+    <div class="vrstica">
+      <form method="post" action="/dodaj">
+        <table>
+            <tr>
+                <td class="glava">
+                  Ime:
+                </td>
+                <td>
+                  <input type="text" name="ime" value="{{ime}}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="glava">
+                  Priimek:
+                </td>
+                <td>
+                  <input type="text" name="priimek" value="{{priimek}}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="glava">
+                  EMŠO:
+                </td>
+                <td>
+                  <input type="text" name="emso" value="{{emso}}"/>
+                </td>
+            </tr>
+            <tr>
+                <td class="glava">
+                  Država:
+                </td>
+                <td>
+                  <input type="text" name="drzava" value="{{drzava}}"/><br />
+                </td>
+            </tr>
+            <tr>
+                <td class="glava">
+                  Email:
+                </td>
+                <td>
+                  <input type="text" name="email" value="{{email}}"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    &nbsp;
+                </td>
+                <td class="gumb_dodaj">
+                  <input type="submit" value="Dodaj" name="dodaj" class="gumbi"/>
+                </td>
+            </tr>
+        </table>
+
+      </form>
+    </div>
+    
+    </div>
+    %if napaka is not None:
+    <div class="vrstica napaka">
+    Napaka: {{napaka}}
+    </div>
+    %end
