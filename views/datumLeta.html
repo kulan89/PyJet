@@ -1,0 +1,29 @@
+
+%rebase ('osnova.html', naslov='Datum leta', navigator='/ datumLeta')
+<body>
+<script type="text/javascript" language="javascript">
+
+    window.onload = function() {
+        let today = new Date().toISOString().substr(0, 10);
+        let date = document.querySelector("#date");
+        date.value = today;
+        date.min = today;
+    }
+
+</script>
+
+<div class="naslov_strani">
+   Datum potovanja
+</div>
+<br>
+<div id="datum">
+    <fieldset style="width:150px;">
+    <form>
+        Izberite datum za odhod:<br>
+        <input id=date type="date" name="datum">
+        <input type="submit">
+        </form>
+    </fieldset>
+</div>
+
+</body>

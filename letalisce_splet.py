@@ -27,7 +27,7 @@ def dobiSeznamOdhodnihLetalisc():
 ##    mesta = []
 ##    for elt in prihodnaLetalisca:
 ##        mesta.append(elt[0])
-##    return mesta
+##    return mesta
 
 
 def dobiSeznamPrihodnihLetalisc(izhodisceId):
@@ -42,13 +42,13 @@ def glavniMenu():
     return template('glavni.html', odhodnaLetalisca=odhodnaLetalisca, prihodnaLetalisca=[(-1, "Prihodno letališče")])
 
 @post('/')
-def glavniMenu2():
-    print(request.forms)
+def pokaziPrihodnaLetalisca():
     odhodnoLetalisceId = int(request.forms.get('odhodnoLetalisce'))
 
     odhodnaLetalisca = dobiSeznamOdhodnihLetalisc()
     prihodnaLetalisca = dobiSeznamPrihodnihLetalisc(odhodnoLetalisceId)
-    return template('glavni.html', prihodoLetalisceOmogoceno=True, izbranoLetalisce=odhodnoLetalisceId, odhodnaLetalisca=odhodnaLetalisca, prihodnaLetalisca=prihodnaLetalisca)
+    return template('glavni.html', prihodnaLetaliscaOmogoceno=True, izbranoLetalisce=odhodnoLetalisceId,
+                    odhodnaLetalisca=odhodnaLetalisca, prihodnaLetalisca=prihodnaLetalisca)
 
 @get('/static/<filename:path>')
 def static(filename):
@@ -73,6 +73,12 @@ def dodaj():
     except Exception as e:
         return template('novPotnik.html', ime = ime, priimek = priimek, emso = emso,
                         drzava = drzava, email = email, napaka = e)
+@get('/datumLeta')
+def datumLeta():
+    odhodnoLetalisce = int(request.query['odhodnoLetalisce'])
+    prihodnoLetalisce = int(request.query['prihodnoLetalisce'])
+    print(odhodnoLetalisce, prihodnoLetalisce)
+    return template('datumLeta.html')
 
 
         

@@ -1,17 +1,29 @@
 %rebase ('osnova.html', naslov='PyJet', navigator='/')
 
+<head>
+  <script language="JavaScript">
+    window.onload = function() {
+        document.getElementById("izberiOdhod").onchange = function()
+        {
+            var formOdhod = document.getElementById("formOdhod");
+            formOdhod.submit();
+        };
+    };
+  </script>
+</head>
+<body>
 <div class="naslov_strani">
     Destinacija
 </div>
 
 <div id="destinacija" class="vrstica">
-    <table>
-    <tr>
-    <td class="napis">Izberi odhodno letališče:</td>
 
-    <td>
-    <form id="formOdhod" method="POST">
-        <select id="izberiOdhod" name="odhodnoLetalisce" width="50" autofocus required>
+
+
+    <fieldset>
+    <form id="formOdhod" method="POST">Izberi odhodno letališče:<br>
+
+        <select id="izberiOdhod" name="odhodnoLetalisce" style="width:150px;" autofocus required>
             %for mesto_id, mesto in odhodnaLetalisca:
                 <li>
                     <option value={{mesto_id}} {{!'selected="selected"' if mesto_id == get('izbranoLetalisce', -1) else ""}}>{{mesto}}</option>
@@ -19,30 +31,24 @@
             %end
         </select>
     </form>
-    </td>
-    </tr>
-    
-    <tr>
-    
-    <form id="formDestinacija" method="GET" action="izberiDatum">
+    </fieldset>
+
+    <fieldset>
+    <form id="formDestinacija" method="GET" action="/datumLeta">Izberi prihodno letališče:<br>
         <input type="hidden" name="odhodnoLetalisce" value={{get('izbranoLetalisce', -1)}} />
-        <td class="napis">Izberi prihodno letališče:</td>
-        <td>
-        <select name="prihodoLetalisce" style="max-width:90%;" required {{!'disabled' if not get('prihodoLetalisceOmogoceno', False) else ''}}>
+
+        <select name="prihodnoLetalisce" style="width:150px;" required {{!'disabled' if not get('prihodnaLetaliscaOmogoceno', False) else ''}}>
             %for mesto_id, mesto in prihodnaLetalisca:
                 <li>
                     <option value={{mesto_id}}>{{mesto}}</option>
                 </li>
             %end
         </select>
-        </td>
-      </tr>
-        
-        <tr>
-        <td>
-        <button type="submit" {{!'disabled' if not get('prihodoLetalisceOmogoceno', False) else ''}}>Potrdi</button>
-        </td>
-        </tr>
+        <br>
+     </fieldset>
+        <button type="submit" {{!'disabled' if not get('prihodnaLetaliscaOmogoceno', False) else ''}}>Potrdi</button>
     </form>
-    </table>
+
 </div>
+
+</body>
