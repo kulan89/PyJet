@@ -95,8 +95,8 @@ def vrniIDdrzave(drzava):
 def dodajPotnika(ime, priimek, emso, drzava, email):
     cur.execute("""
         INSERT INTO Potnik (Ime, Priimek, EMSO, IDdrzave, Email)
-        VALUES (?,?,?,?)
-        """,(ime,priimek,emso,vrniIDdrzave(drzava)[0]), email)
+        VALUES (?,?,?,?,?)
+        """,(ime,priimek,emso,vrniIDdrzave(drzava)[0], email))
     con.commit()    
     
 def steviloSedezev(id_leta):
