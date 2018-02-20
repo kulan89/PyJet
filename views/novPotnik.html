@@ -6,57 +6,18 @@
     
     <div class="vrstica">
       <form method="post" action="/dodaj">
-        <table>
-            <tr>
-                <td class="glava">
-                  Ime:
-                </td>
-                <td>
-                  <input type="text" name="ime" value="{{ime}}"/>
-                </td>
-            </tr>
-            <tr>
-                <td class="glava">
-                  Priimek:
-                </td>
-                <td>
-                  <input type="text" name="priimek" value="{{priimek}}"/>
-                </td>
-            </tr>
-            <tr>
-                <td class="glava">
-                  EMŠO:
-                </td>
-                <td>
-                  <input type="text" name="emso" value="{{emso}}"/>
-                </td>
-            </tr>
-            <tr>
-                <td class="glava">
-                  Država:
-                </td>
-                <td>
-                  <input type="text" name="drzava" value="{{drzava}}"/><br />
-                </td>
-            </tr>
-            <tr>
-                <td class="glava">
-                  Email:
-                </td>
-                <td>
-                  <input type="text" name="email" value="{{email}}"/>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    &nbsp;
-                </td>
-                <td class="gumb_dodaj">
+                <fieldset class="glava" style="width:150px; border:0px" autofocus required>
+                  Ime: <input type="text" name="ime" value="{{ime}}"/><br>
+                  Priimek: <input type="text" name="priimek" value="{{priimek}}"/><br>
+                  EMŠO: <input type="text" name="emso" value="{{emso}}"/><br>
+                  Država: <input type="text" name="drzava" value="{{drzava}}"/><br>
+                  Email: <input type="text" name="email" value="{{email}}"/><br>
+                </fieldset>
+                
+                
+                <fieldset class="gumb_dodaj" style="width:150px;border:0px" autofocus required>
                   <input type="submit" value="Dodaj" name="dodaj" class="gumbi"/>
-                </td>
-            </tr>
-        </table>
-
+                </fieldset>
       </form>
     </div>
     
