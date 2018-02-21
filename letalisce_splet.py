@@ -69,8 +69,7 @@ def dodaj():
     drzava = request.forms.drzava
     email = request.forms.email
     try:
-        if not modeli.dodajPotnika(ime, priimek, emso, drzava, email):
-            modeli.dodajPotnika(ime, priimek, emso, drzava, email)
+        modeli.dodajPotnika(ime, priimek, emso, drzava, email)
     except Exception as e:
         return template('novPotnik.html', ime = ime, priimek = priimek, emso = emso,
                         drzava = drzava, email = email, napaka = e)
