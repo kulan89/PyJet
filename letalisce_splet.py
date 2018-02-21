@@ -54,11 +54,12 @@ def pokaziPrihodnaLetalisca():
 def static(filename):
     return static_file(filename, root='static')
 
-@get('/dodajPotnika')
+@get('/novPotnik')
 def dodajNovegaPotnika():
+    datumLeta = request.query['datum']
+    print(datumLeta)
     return template('novPotnik.html', ime = None, priimek = None, emso = None,
-                        ulica = None, hisna_st = None, postna_st = None,
-                        kraj = None, napaka = None)
+                        drzava = None,email = None, napaka = None)
 
 @post('/dodaj')
 def dodaj():
@@ -77,8 +78,10 @@ def dodaj():
 def datumLeta():
     odhodnoLetalisce = int(request.query['odhodnoLetalisce'])
     prihodnoLetalisce = int(request.query['prihodnoLetalisce'])
-    print(odhodnoLetalisce, prihodnoLetalisce)
+    IDleta = modeli.vrniIDleta(odhodnoLetalisce, prihodnoLetalisce)
+    print(odhodnoLetalisce, prihodnoLetalisce, IDleta)
     return template('datumLeta.html')
+
 
 
         
