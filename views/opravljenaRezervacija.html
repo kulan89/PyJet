@@ -1,0 +1,26 @@
+%rebase ('osnova.html', naslov='Opravljena rezarvacija', navigator='/ opravljenaRezervacija')
+
+    <div class="naslov_strani">
+       Rezervacija je uspešno opravljena!
+    </div>
+    
+    <div class="vrstica">
+        Podatki o rezervaciji :
+    </div>
+    <div>
+        <form>
+          <fieldset style="width:300px" autofocus required>
+            <legend>Podatki o potniku:</legend>
+            Ime: <input type="text" value="{{ime}}" ><br>
+            Priimek: <input type="text" value="{{priimek}}" ><br>
+            EMŠO: <input type="text" value="{{emso}}" ><br>
+            Država: <input type="text" value="{{drzava}}" ><br>
+            Email: <input type="text" value="{{email}}" ><br>
+          </fieldset>
+          
+          <fieldset style="width:300px">
+            <legend>Podatki o rezerviranem letu:</legend>
+          </fieldset>
+          
+        </form>
+    </div>
