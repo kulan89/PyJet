@@ -76,7 +76,18 @@ def dodaj():
         except Exception as e:
             return template('novPotnik.html', ime = ime, priimek = priimek, emso = emso,
                         drzava = drzava, email = email, napaka = e)
-    print(idPotnika)
+    print(idPotnika[0])
+    ID = idPotnika[0]
+    redirect('/opravljenaRezervacija/' + str(ID))
+    
+
+@get('/opravljenaRezervacija/<ID>')
+def rezervacija(ID):
+    napaka = request.query.napaka
+    if not napaka:
+        napaka = None
+    ime, priimek, emso, IDdrzave, email = modeli.vrniPotnika(ID)
+    return template('opravljenaRezervacija.html', ime = ime, priimek = priimek, emso = emso, drzava = modeli.vrniDrzavo(IDdrzave)[0], email = email, napaka = napaka)
        
     
         
