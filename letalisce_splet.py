@@ -68,11 +68,19 @@ def dodaj():
     emso = request.forms.emso
     drzava = request.forms.drzava
     email = request.forms.email
-    try:
-        modeli.dodajPotnika(ime, priimek, emso, drzava, email)
-    except Exception as e:
-        return template('novPotnik.html', ime = ime, priimek = priimek, emso = emso,
+    idPotnika = modeli.vrniIDpotnika(ime,priimek,emso,drzava,email)
+    if idPotnika is None:
+        try :
+            modeli.dodajPotnika(ime, priimek, emso, drzava, email)
+            idPotnika = modeli.vrniIDpotnika(ime,priimek,emso,drzava,email)
+        except Exception as e:
+            return template('novPotnik.html', ime = ime, priimek = priimek, emso = emso,
                         drzava = drzava, email = email, napaka = e)
+    print(idPotnika)
+       
+    
+        
+        
 @get('/datumLeta')
 def datumLeta():
     odhodnoLetalisce = int(request.query['odhodnoLetalisce'])
