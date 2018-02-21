@@ -107,6 +107,14 @@ def vrniIDpotnika(ime,priimek,emso,drzava,email):
         return cur.fetchone()
     except:
         return None
+
+
+def vrniPotnika(ID):
+    cur.execute("""
+        SELECT ime,priimek,emso,IDdrzave,email FROM Potnik
+        WHERE ID = ?""", (ID,))
+    return cur.fetchone()
+    
     
     
 def steviloSedezev(id_leta):
@@ -150,6 +158,12 @@ def urnikInPotnik(id_potnika,id_urnika):
         INSERT INTO Razpored (IDpotnika, IDurnika)
         VALUES (?,?)""", (id_potnika, id_urnika))
     con.commit()
+
+def vrniDrzavo(id_drzave):
+    cur.execute("""
+        SELECT Ime FROM Drzava WHERE ID = ?""", (id_drzave,))
+    return cur.fetchone()
+    
 
 def vrniDatume(id_leta):
     '''vrne datume letov med izbranima destinacijama'''
