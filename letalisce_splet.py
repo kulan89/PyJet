@@ -93,27 +93,28 @@ def dodaj():
                         drzava = drzava, email = email, napaka = e)
 
     #print(idPotnika[0])
-    ID = idPotnika[0]
+    ID = str(idPotnika[0])
     datumLeta = request.forms.datumLeta
     odhodnoLetalisce = request.forms.odhodnoLetalisce
     prihodnoLetalisce = request.forms.prihodnoLetalisce
-    IDleta = request.forms.IDleta
+    IDleta = request.forms.IDleta[1:(-2)]
     print(datumLeta, odhodnoLetalisce, prihodnoLetalisce, IDleta)
-    redirect('/opravljenaRezervacija/' + str(ID))
+    pot=ID+'&'+datumLeta+'&'+odhodnoLetalisce+'&'+prihodnoLetalisce+'&'+IDleta
+    redirect('/opravljenaRezervacija/' + str(pot))
     
 
-@get('/opravljenaRezervacija/<ID>')
-def rezervacija(ID):
+@get('/opravljenaRezervacija/<pot>')
+def rezervacija(pot):
     napaka = request.query.napaka
     if not napaka:
         napaka = None
 
     #informacije se ne prenesejo...kako do informacij iz prejšnje strani?
-    datumLeta = request.query.datumLeta
-    odhodnoLetalisce = request.query.prihodnoLetalisce
-    prihodnoLetalisce = request.query.prihodnoLetalisce
-    IDleta=request.query.IDleta
-    print(datumLeta, odhodnoLetalisce, prihodnoLetalisce, IDleta)
+    #datumLeta = request.query.datumLeta
+    #odhodnoLetalisce = request.query.prihodnoLetalisce
+    #prihodnoLetalisce = request.query.prihodnoLetalisce
+    #IDleta=request.query.IDleta
+    ID, datumLeta, odhodnoLetalisce, prihodnoLetalisce, IDleta = pot.split('&')
     ime, priimek, emso, IDdrzave, email = modeli.vrniPotnika(ID)
     return template('opravljenaRezervacija.html', ime = ime, priimek = priimek, emso = emso, drzava = modeli.vrniDrzavo(IDdrzave)[0], email = email,
                     datumLeta = datumLeta, odhodnoLetalisce=odhodnoLetalisce, prihodnoLetalisce=prihodnoLetalisce, napaka = napaka)
