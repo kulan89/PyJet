@@ -54,12 +54,27 @@ def pokaziPrihodnaLetalisca():
 def static(filename):
     return static_file(filename, root='static')
 
+@get('/datumLeta')
+def datumLeta():
+    odhodnoLetalisce = int(request.query['odhodnoLetalisce'])
+    prihodnoLetalisce = int(request.query['prihodnoLetalisce'])
+    odhod = modeli.vrniDestinacijo(odhodnoLetalisce)[0]
+    prihod = modeli.vrniDestinacijo(prihodnoLetalisce)[0]
+    IDleta = modeli.vrniIDleta(odhodnoLetalisce, prihodnoLetalisce)
+    print(odhodnoLetalisce, prihodnoLetalisce, IDleta)
+    return template('datumLeta.html',odhod = odhod, prihod = prihod, odhodnoLetalisce=odhodnoLetalisce,prihodnoLetalisce=prihodnoLetalisce, IDleta = IDleta)
+
+
 @get('/novPotnik')
 def dodajNovegaPotnika():
     datumLeta = request.query['datum']
-    print(datumLeta)
+    odhodnoLetalisce=request.query['odhodnoLetalisce']
+    prihodnoLetalisce = request.query['prihodnoLetalisce']
+    IDleta = request.query['IDleta']
+    print(datumLeta,odhodnoLetalisce,prihodnoLetalisce, IDleta)
     return template('novPotnik.html', ime = None, priimek = None, emso = None,
-                        drzava = None,email = None, napaka = None)
+                        drzava = None,email = None, napaka = None,
+                    datumLeta = datumLeta, odhodnoLetalisce = odhodnoLetalisce, prihodnoLetalisce = prihodnoLetalisce, IDleta = IDleta)
 
 @post('/dodaj')
 def dodaj():
@@ -76,8 +91,15 @@ def dodaj():
         except Exception as e:
             return template('novPotnik.html', ime = ime, priimek = priimek, emso = emso,
                         drzava = drzava, email = email, napaka = e)
-    print(idPotnika[0])
+
+
+    #print(idPotnika[0])
     ID = idPotnika[0]
+    datumLeta = request.forms.datumLeta
+    odhodnoLetalisce = request.forms.odhodnoLetalisce
+    prihodnoLetalisce = request.forms.prihodnoLetalisce
+    IDleta = request.forms.IDleta
+    print(datumLeta, odhodnoLetalisce, prihodnoLetalisce, IDleta)
     redirect('/opravljenaRezervacija/' + str(ID))
     
 
@@ -86,23 +108,19 @@ def rezervacija(ID):
     napaka = request.query.napaka
     if not napaka:
         napaka = None
+
+    #informacije se ne prenesejo...kako do informacij iz prejšnje strani?
+    datumLeta = request.forms.datumLeta
+    odhodnoLetalisce = request.forms.odhodnoLetalisce
+    prihodnoLetalisce = request.forms.prihodnoLetalisce
     ime, priimek, emso, IDdrzave, email = modeli.vrniPotnika(ID)
-    return template('opravljenaRezervacija.html', ime = ime, priimek = priimek, emso = emso, drzava = modeli.vrniDrzavo(IDdrzave)[0], email = email, napaka = napaka)
+    return template('opravljenaRezervacija.html', ime = ime, priimek = priimek, emso = emso, drzava = modeli.vrniDrzavo(IDdrzave)[0], email = email,
+                    datumLeta = datumLeta, odhodnoLetalisce=odhodnoLetalisce, prihodnoLetalisce=prihodnoLetalisce, napaka = napaka)
        
     
         
         
-@get('/datumLeta')
-def datumLeta():
-    odhodnoLetalisce = int(request.query['odhodnoLetalisce'])
-    prihodnoLetalisce = int(request.query['prihodnoLetalisce'])
-    IDleta = modeli.vrniIDleta(odhodnoLetalisce, prihodnoLetalisce)
-    print(odhodnoLetalisce, prihodnoLetalisce, IDleta)
-    return template('datumLeta.html')
-
-
-
-        
+       
 ##@get('/oseba/<emso>')
 ##def oOsebi(emso):
 ##    napaka = request.query.napaka
