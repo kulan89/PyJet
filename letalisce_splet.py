@@ -92,7 +92,6 @@ def dodaj():
             return template('novPotnik.html', ime = ime, priimek = priimek, emso = emso,
                         drzava = drzava, email = email, napaka = e)
 
-
     #print(idPotnika[0])
     ID = idPotnika[0]
     datumLeta = request.forms.datumLeta
@@ -110,9 +109,11 @@ def rezervacija(ID):
         napaka = None
 
     #informacije se ne prenesejo...kako do informacij iz prejšnje strani?
-    datumLeta = request.forms.datumLeta
-    odhodnoLetalisce = request.forms.odhodnoLetalisce
-    prihodnoLetalisce = request.forms.prihodnoLetalisce
+    datumLeta = request.query.datumLeta
+    odhodnoLetalisce = request.query.prihodnoLetalisce
+    prihodnoLetalisce = request.query.prihodnoLetalisce
+    IDleta=request.query.IDleta
+    print(datumLeta, odhodnoLetalisce, prihodnoLetalisce, IDleta)
     ime, priimek, emso, IDdrzave, email = modeli.vrniPotnika(ID)
     return template('opravljenaRezervacija.html', ime = ime, priimek = priimek, emso = emso, drzava = modeli.vrniDrzavo(IDdrzave)[0], email = email,
                     datumLeta = datumLeta, odhodnoLetalisce=odhodnoLetalisce, prihodnoLetalisce=prihodnoLetalisce, napaka = napaka)
