@@ -15,6 +15,11 @@
 <div class="naslov_strani">
    Datum potovanja
 </div>
+
+<div class ="vrstica" >
+Izberite datum potovanja za izbrano relacijo {{odhod}} ---> {{prihod}} :
+</div>
+
 <br>
 <div id="datum">
     <fieldset style="width:150px;">
@@ -22,6 +27,9 @@
         Izberite datum za odhod:<br>
         <input id=date type="date" name="datum">
         <input type="submit">
+        <input type="hidden" name="odhodnoLetalisce" value="{{odhodnoLetalisce}}" />
+        <input type="hidden" name="prihodnoLetalisce" value="{{prihodnoLetalisce}}" />
+        <input type="hidden" name="IDleta" value="{{IDleta}}" />
         </form>
     </fieldset>
 </div>
