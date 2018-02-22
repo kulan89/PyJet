@@ -163,6 +163,11 @@ def vrniDrzavo(id_drzave):
     cur.execute("""
         SELECT Ime FROM Drzava WHERE ID = ?""", (id_drzave,))
     return cur.fetchone()
+
+def vrniDestinacijo(id_destinacije):
+    cur.execute("""
+        SELECT Ime FROM Destinacije WHERE ID = ?""", (id_destinacije,))
+    return cur.fetchone()
     
 
 def vrniDatume(id_leta):
