@@ -1,6 +1,7 @@
 import modeli as modeli
 from bottle import *
 from datetime import datetime
+import hashlib
 
 
 def pretvoriDatum(x):
@@ -139,15 +140,22 @@ def rezervacija(pot):
     if not napaka:
         napaka = None
 
+    hashPoti = hashlib.md5(pot.encode())
+    referencnaSt = hashPoti.hexdigest()[:10]
+    #print(referencnaSt)
+    
     IDpotnika, datumLeta, odhodnoLetalisce, prihodnoLetalisce, IDleta, IDurnika = pot.split('&')
     leto, mesec, dan = datumLeta.split('-')
     novDatum = dan+'-'+mesec+'-'+leto
     ime, priimek, emso, IDdrzave, email = modeli.vrniPotnika(IDpotnika)
 
+    odhodnoLetalisceIme=modeli.vrniDestinacijo(odhodnoLetalisce)[0]
+    prihodnoLetalisceIme=modeli.vrniDestinacijo(prihodnoLetalisce)[0]
+    
     modeli.urnikInPotnik(IDpotnika,IDurnika)
     
     return template('opravljenaRezervacija.html', ime = ime, priimek = priimek, emso = emso, drzava = modeli.vrniDrzavo(IDdrzave)[0], email = email,
-                    datumLeta = novDatum, odhodnoLetalisce=odhodnoLetalisce, prihodnoLetalisce=prihodnoLetalisce, napaka = napaka)
+                    datumLeta = novDatum, odhodnoLetalisce=odhodnoLetalisceIme, prihodnoLetalisce=prihodnoLetalisceIme, referencnaSt = referencnaSt, napaka = napaka)
        
     
         
