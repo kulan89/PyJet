@@ -152,11 +152,11 @@ def vrniIDurnika(id_leta, datum):
         SELECT ID FROM Urnik WHERE IDleta = ? AND Datum = ?""", (id_leta, datum))
     return cur.fetchone()
 
-def urnikInPotnik(id_potnika,id_urnika):
+def urnikInPotnik(id_potnika,id_urnika,referencnaSt):
     '''v tabelo Razpored shrani potnika in njegov izbran let'''
     cur.execute("""
-        INSERT INTO Razpored (IDpotnika, IDurnika)
-        VALUES (?,?)""", (id_potnika, id_urnika))
+        INSERT INTO Razpored (IDpotnika, IDurnika, referencnaSt)
+        VALUES (?,?,?)""", (id_potnika, id_urnika, referencnaSt))
     con.commit()
 
 def vrniDrzavo(id_drzave):
@@ -190,5 +190,7 @@ def dodajNovLet(datum,id_leta):
         INSERT INTO Urnik (IDleta, Datum, Zasedenost)
         VALUES (?,?,?)""", (id_leta, datum,1))
     con.commit()
+
+
 
     
