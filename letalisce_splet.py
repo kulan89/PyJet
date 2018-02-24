@@ -56,13 +56,15 @@ def static(filename):
 
 @get('/datumLeta')
 def datumLeta():
+    napaka = None
     odhodnoLetalisce = int(request.query['odhodnoLetalisce'])
     prihodnoLetalisce = int(request.query['prihodnoLetalisce'])
     odhod = modeli.vrniDestinacijo(odhodnoLetalisce)[0]
     prihod = modeli.vrniDestinacijo(prihodnoLetalisce)[0]
     IDleta = modeli.vrniIDleta(odhodnoLetalisce, prihodnoLetalisce)
-    print(odhodnoLetalisce, prihodnoLetalisce, IDleta)
-    return template('datumLeta.html',odhod = odhod, prihod = prihod, odhodnoLetalisce=odhodnoLetalisce,prihodnoLetalisce=prihodnoLetalisce, IDleta = IDleta)
+    #print(odhodnoLetalisce, prihodnoLetalisce, IDleta)
+    return template('datumLeta.html',odhod = odhod, prihod = prihod, odhodnoLetalisce=odhodnoLetalisce,
+                    prihodnoLetalisce=prihodnoLetalisce, IDleta = IDleta, napaka=napaka)
 
 
 @get('/novPotnik')
@@ -70,11 +72,38 @@ def dodajNovegaPotnika():
     datumLeta = request.query['datum']
     odhodnoLetalisce=request.query['odhodnoLetalisce']
     prihodnoLetalisce = request.query['prihodnoLetalisce']
-    IDleta = request.query['IDleta']
-    print(datumLeta,odhodnoLetalisce,prihodnoLetalisce, IDleta)
-    return template('novPotnik.html', ime = None, priimek = None, emso = None,
+    IDleta = request.query['IDleta'][1:(-2)]
+
+ 
+    datumi = modeli.vrniDatume(IDleta)
+    datumi1 = [elt[0] for elt in datumi]
+
+    #print(datumLeta, datumi1)
+
+    if datumLeta not in datumi1:
+        modeli.dodajNovLet(datumLeta,IDleta)
+        IDurnika = modeli.vrniIDurnika(IDleta, datumLeta)[0]
+        print(IDurnika)
+        return template('novPotnik.html', ime = None, priimek = None, emso = None,
                         drzava = None,email = None, napaka = None,
+                    datumLeta = datumLeta, odhodnoLetalisce = odhodnoLetalisce, prihodnoLetalisce = prihodnoLetalisce, IDleta = IDleta, IDurnika = IDurnika)
+    else:
+        IDurnika = modeli.vrniIDurnika(IDleta, datumLeta)[0]
+        print(IDurnika)
+        zasedenost = modeli.preveriZasedenostSedezev(IDurnika)[0]
+        stSedezev = modeli.steviloSedezev(IDleta)[0]
+        if zasedenost < stSedezev:
+            modeli.zasediSedez(IDurnika)
+            return template('novPotnik.html', ime = None, priimek = None, emso = None,
+                        drzava = None,email = None, napaka = None,
+                    datumLeta = datumLeta, odhodnoLetalisce = odhodnoLetalisce, prihodnoLetalisce = prihodnoLetalisce, IDleta = IDleta, IDurnika = IDurnika)
+        else:
+            return template('novPotnik.html', ime = None, priimek = None, emso = None,
+                        drzava = None,email = None, napaka = 'Izbrani datum je zaseden - vrnite se na prejšnjo stran in izberite nov datum',
                     datumLeta = datumLeta, odhodnoLetalisce = odhodnoLetalisce, prihodnoLetalisce = prihodnoLetalisce, IDleta = IDleta)
+            
+
+
 
 @post('/dodaj')
 def dodaj():
@@ -92,14 +121,15 @@ def dodaj():
             return template('novPotnik.html', ime = ime, priimek = priimek, emso = emso,
                         drzava = drzava, email = email, napaka = e)
 
-    #print(idPotnika[0])
-    ID = str(idPotnika[0])
+    IDpotnika = str(idPotnika[0])
+    IDurnika = request.forms.IDurnika
     datumLeta = request.forms.datumLeta
     odhodnoLetalisce = request.forms.odhodnoLetalisce
     prihodnoLetalisce = request.forms.prihodnoLetalisce
-    IDleta = request.forms.IDleta[1:(-2)]
+    IDleta = request.forms.IDleta
+    IDurnika = request.forms.IDurnika
     print(datumLeta, odhodnoLetalisce, prihodnoLetalisce, IDleta)
-    pot=ID+'&'+datumLeta+'&'+odhodnoLetalisce+'&'+prihodnoLetalisce+'&'+IDleta
+    pot=IDpotnika+'&'+datumLeta+'&'+odhodnoLetalisce+'&'+prihodnoLetalisce+'&'+IDleta+'&'+IDurnika
     redirect('/opravljenaRezervacija/' + str(pot))
     
 
@@ -109,15 +139,15 @@ def rezervacija(pot):
     if not napaka:
         napaka = None
 
-    #informacije se ne prenesejo...kako do informacij iz prejšnje strani?
-    #datumLeta = request.query.datumLeta
-    #odhodnoLetalisce = request.query.prihodnoLetalisce
-    #prihodnoLetalisce = request.query.prihodnoLetalisce
-    #IDleta=request.query.IDleta
-    ID, datumLeta, odhodnoLetalisce, prihodnoLetalisce, IDleta = pot.split('&')
-    ime, priimek, emso, IDdrzave, email = modeli.vrniPotnika(ID)
+    IDpotnika, datumLeta, odhodnoLetalisce, prihodnoLetalisce, IDleta, IDurnika = pot.split('&')
+    leto, mesec, dan = datumLeta.split('-')
+    novDatum = dan+'-'+mesec+'-'+leto
+    ime, priimek, emso, IDdrzave, email = modeli.vrniPotnika(IDpotnika)
+
+    modeli.urnikInPotnik(IDpotnika,IDurnika)
+    
     return template('opravljenaRezervacija.html', ime = ime, priimek = priimek, emso = emso, drzava = modeli.vrniDrzavo(IDdrzave)[0], email = email,
-                    datumLeta = datumLeta, odhodnoLetalisce=odhodnoLetalisce, prihodnoLetalisce=prihodnoLetalisce, napaka = napaka)
+                    datumLeta = novDatum, odhodnoLetalisce=odhodnoLetalisce, prihodnoLetalisce=prihodnoLetalisce, napaka = napaka)
        
     
         
