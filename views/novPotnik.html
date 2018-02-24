@@ -1,39 +1,32 @@
 %rebase ('osnova.html', naslov='Nov potnik', navigator='/ novPotnik')
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
- %if napaka is not None:
-    <div class="vrstica napaka">
+%if napaka is not None:
+<div class="vrstica napaka">
     Napaka: {{napaka}}
-    </div>
- %end
+</div>
+%end
 
-    <div class="naslov_strani">
-       Vnesi podatke o potniku
-    </div>
-    
-    <div class="vrstica">
-      <form method="post" action="/dodaj">
-                <fieldset class="glava" style="width:150px; border:0px" autofocus required>
-                  Ime: <input type="text" name="ime" value="{{ime}}"/><br>
-                  Priimek: <input type="text" name="priimek" value="{{priimek}}"/><br>
-                  EMŠO: <input type="text" name="emso" value="{{emso}}"/><br>
-                  Država: <input type="text" name="drzava" value="{{drzava}}"/><br>
-                  Email: <input type="text" name="email" value="{{email}}"/><br>
-                </fieldset>
-                
-                <input type="hidden" name="datumLeta" value="{{datumLeta}}" />
-                <input type="hidden" name="prihodnoLetalisce" value="{{prihodnoLetalisce}}" />
-                <input type="hidden" name="odhodnoLetalisce" value="{{odhodnoLetalisce}}" />
-                <input type="hidden" name="IDleta" value="{{IDleta}}" />
-                <input type="hidden" name="IDurnika" value="{{IDurnika}}" />
-                
-                
-                <fieldset class="gumb_dodaj" style="width:150px;border:0px" autofocus required>
-                  <input type="submit" value="Dodaj" name="dodaj" class="gumbi"/>
-                </fieldset>
+<h1>Vnesi podatke o potniku</h1>
+<div>
+    <form method="post" action="/dodaj">
+        <fieldset class="glava" style="width:150px; border:0px" autofocus required>
+            Ime: <input type="text" name="ime" value="{{ime}}"/><br>
+            Priimek: <input type="text" name="priimek" value="{{priimek}}"/><br>
+            EMŠO: <input type="text" name="emso" value="{{emso}}"/><br>
+            Država: <input type="text" name="drzava" value="{{drzava}}"/><br>
+            Email: <input type="text" name="email" value="{{email}}"/><br>
+        </fieldset>
 
-      </form>
-    </div>
-    
+        <input type="hidden" name="datumLeta" value="{{datumLeta}}"/>
+        <input type="hidden" name="prihodnoLetalisce" value="{{prihodnoLetalisce}}"/>
+        <input type="hidden" name="odhodnoLetalisce" value="{{odhodnoLetalisce}}"/>
+        <input type="hidden" name="IDleta" value="{{IDleta}}"/>
+        <input type="hidden" name="IDurnika" value="{{IDurnika}}"/>
 
-	
+
+        <fieldset class="gumb_dodaj" style="width:150px;border:0px" autofocus required>
+            <input type="submit" value="Dodaj" name="dodaj" class="gumbi"/>
+        </fieldset>
+    </form>
+</div>

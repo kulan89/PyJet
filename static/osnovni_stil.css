@@ -1,0 +1,127 @@
+/* Postavitev strani */
+body {
+    margin: 0;
+    background-image: url("/static/slike/ozadje.jpg");
+    min-height: 500px;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+/* Glavni menu */
+.glavni_menu {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 25%;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+    background-color: #B6A19EE7;
+}
+
+/* Okvir za vsebino opcij */
+#glavni_okvir {
+    position: absolute;
+    width: 68%;
+    margin: 2%;
+    left: 28%;
+    right: 28%;
+    background-color: rgba(107, 186, 167, 0.8);
+    border: none;
+}
+
+/* Stili za pisavo v vsebini */
+#glavni_okvir h1 {
+    font-size: 35px;
+    font-family: Lato;
+    color: white;
+    background-color: #6C648B;
+}
+
+#glavni_okvir p {
+    font-size: 20px;
+    font-family: Lato;
+    color: white;
+}
+
+#glavni_okvir form {
+    font-size: 20px;
+    font-family: Lato;
+    color: white;
+}
+
+/* Opcije v glavnem menuju */
+.opcije a {
+    display: block;
+    color: white;
+    padding: 8px 16px;
+    text-decoration: none;
+    height: 50px;
+
+    border-radius: 5px;
+    outline-style: outset;
+    outline-color: #FBA100;
+    text-align: center;
+    font-size: 30px;
+    font-family: Lato;
+    font-weight: bold;
+
+}
+
+.opcije a.active {
+    background-color: #6C648B;
+    color: #B6A19E;
+}
+
+.opcije a:hover:not(.active) {
+    background-color: #6C648B;
+}
+
+/* Mreža za destinacje */
+.mreza {
+    display: grid;
+    grid-template-columns: auto auto;
+    background-color: rgba(107, 186, 167, 0.5);
+    padding: 10px;
+    position: fixed;
+    left: 500px;
+    width: 60%;
+    height: 100%;
+    overflow: scroll;
+}
+
+/* Vsebina mreže */
+.vsebina {
+    background-color: rgba(107, 186, 167, 0.5);
+    border: 1px double #FBA100;
+    padding: 20px;
+    font-size: 30px;
+    font-family: Lato;
+    margin: 5px
+}
+
+.vsebina1 {
+    grid-row-start: 1;
+    grid-row-end: 3;
+    border: 1px double #FBA100;
+    padding: 20px;
+    font-size: 30px;
+    font-family: Lato;
+    margin: 5px
+}
+
+/* Skrijemo drsnik */
+::-webkit-scrollbar {
+    display: none;
+}
+
+.vrstica {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+.napaka {
+  color: #ff0000;
+}

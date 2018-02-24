@@ -1,8 +1,36 @@
 import modeli as modeli
 from bottle import *
 from datetime import datetime
+from collections import defaultdict
 import hashlib
 
+glavniMenuAktivniGumb=""
+glavniMenuTemplate = '''<li><a {gumbRezervacija} href="/izbiraDestinacije" >Rezervacija leta</a></li>
+        <li><a {gumbDestinacije} href="/destinacije">Destinacije</a></li>
+        <li><a {gumbUdobje} href="/udobje">Za vaše udobje</a></li>
+        <li><a {gumbPodjetje} href="/podjetje">O podjetju</a></li>'''
+
+def nastaviAktivniGumbMenuja(gumb):
+    global glavniMenuAktivniGumb
+    glavniMenuAktivniGumb = gumb
+
+# glavniMeni(aktivniGumb="gumbDestinacije")
+def glavniMeni(**kwargs):
+    glavniMenu = glavniMenuTemplate
+    if kwargs is not None and "aktivniGumb" in kwargs:
+        if kwargs["aktivniGumb"] == "gumbDestinacije":
+            glavniMenu = glavniMenu.format_map(defaultdict(str, gumbDestinacije='class="active"'))
+        elif kwargs["aktivniGumb"] == "gumbRezervacija":
+            glavniMenu = glavniMenu.format_map(defaultdict(str, gumbRezervacija='class="active"'))
+        elif kwargs["aktivniGumb"] == "gumbUdobje":
+            glavniMenu = glavniMenu.format_map(defaultdict(str, gumbUdobje='class="active"'))
+        elif kwargs["aktivniGumb"] == "gumbPodjetje":
+            glavniMenu = glavniMenu.format_map(defaultdict(str, gumbPodjetje='class="active"'))
+    return glavniMenu
+
+def oblikujTemplate(*args, **kwargs):
+    kwargs["glavni_menu"] = glavniMeni(aktivniGumb=glavniMenuAktivniGumb)
+    return template(*args, **kwargs)
 
 def pretvoriDatum(x):
     if x is None:
@@ -36,37 +64,59 @@ def dobiSeznamPrihodnihLetalisc(izhodisceId):
     return prihodnaLetalisca
 
 
+@get('/static/<filename:path>')
+def static(filename):
+    return static_file(filename, root='static')
+
+
 @get('/')
-def glavniMenu():
+def pozdravnaStran():
+    nastaviAktivniGumbMenuja("")
+    return oblikujTemplate('pozdravnaStran.html')
+
+@get('/destinacije')
+def destinacije():
+    nastaviAktivniGumbMenuja("gumbDestinacije")
+    return oblikujTemplate('destinacije.html')
+
+@get('/izbiraDestinacije')
+def izbiraDestinacije():
     odhodnaLetalisca = dobiSeznamOdhodnihLetalisc()
     odhodnaLetalisca.insert(0, (-1, "Izberi"))
-    return template('glavni.html', odhodnaLetalisca=odhodnaLetalisca, prihodnaLetalisca=[(-1, "Prihodno letališče")])
 
-@post('/')
+    nastaviAktivniGumbMenuja("gumbRezervacija")
+    return oblikujTemplate('izbiraDestinacije.html',
+                           odhodnaLetalisca=odhodnaLetalisca,
+                           prihodnaLetalisca=[(-1, "Prihodno letališče")])
+
+@post('/izbiraDestinacije')
 def pokaziPrihodnaLetalisca():
     odhodnoLetalisceId = int(request.forms.get('odhodnoLetalisce'))
 
     odhodnaLetalisca = dobiSeznamOdhodnihLetalisc()
     prihodnaLetalisca = dobiSeznamPrihodnihLetalisc(odhodnoLetalisceId)
-    return template('glavni.html', prihodnaLetaliscaOmogoceno=True, izbranoLetalisce=odhodnoLetalisceId,
-                    odhodnaLetalisca=odhodnaLetalisca, prihodnaLetalisca=prihodnaLetalisca)
 
-@get('/static/<filename:path>')
-def static(filename):
-    return static_file(filename, root='static')
+    return oblikujTemplate('izbiraDestinacije.html',
+                           gumbRezervacijaAktiven=True,
+                           prihodnaLetaliscaOmogoceno=True,
+                           izbranoLetalisce=odhodnoLetalisceId,
+                           odhodnaLetalisca=odhodnaLetalisca,
+                           prihodnaLetalisca=prihodnaLetalisca)
 
 @get('/datumLeta')
 def datumLeta():
     napaka = None
     odhodnoLetalisce = int(request.query['odhodnoLetalisce'])
     prihodnoLetalisce = int(request.query['prihodnoLetalisce'])
-    odhod = modeli.vrniDestinacijo(odhodnoLetalisce)[0]
+    odhod  = modeli.vrniDestinacijo(odhodnoLetalisce)[0]
     prihod = modeli.vrniDestinacijo(prihodnoLetalisce)[0]
     IDleta = modeli.vrniIDleta(odhodnoLetalisce, prihodnoLetalisce)
     #print(odhodnoLetalisce, prihodnoLetalisce, IDleta)
-    return template('datumLeta.html',odhod = odhod, prihod = prihod, odhodnoLetalisce=odhodnoLetalisce,
-                    prihodnoLetalisce=prihodnoLetalisce, IDleta = IDleta, napaka=napaka)
 
+    return oblikujTemplate('datumLeta.html',
+                           odhod=odhod, prihod=prihod,
+                           odhodnoLetalisce=odhodnoLetalisce, prihodnoLetalisce=prihodnoLetalisce,
+                           IDleta=IDleta, napaka=napaka)
 
 @get('/novPotnik')
 def dodajNovegaPotnika():
@@ -75,7 +125,6 @@ def dodajNovegaPotnika():
     prihodnoLetalisce = request.query['prihodnoLetalisce']
     IDleta = request.query['IDleta'][1:(-2)]
 
- 
     datumi = modeli.vrniDatume(IDleta)
     datumi1 = [elt[0] for elt in datumi]
 
@@ -85,52 +134,69 @@ def dodajNovegaPotnika():
         modeli.dodajNovLet(datumLeta,IDleta)
         IDurnika = modeli.vrniIDurnika(IDleta, datumLeta)[0]
         print(IDurnika)
-        return template('novPotnik.html', ime = None, priimek = None, emso = None,
-                        drzava = None,email = None, napaka = None,
-                    datumLeta = datumLeta, odhodnoLetalisce = odhodnoLetalisce, prihodnoLetalisce = prihodnoLetalisce, IDleta = IDleta, IDurnika = IDurnika)
+        return oblikujTemplate('novPotnik.html',
+                               ime=None, priimek=None, emso=None,
+                               drzava=None,
+                               email=None,
+                               datumLeta=datumLeta,
+                               odhodnoLetalisce=odhodnoLetalisce, prihodnoLetalisce=prihodnoLetalisce,
+                               IDleta=IDleta, IDurnika=IDurnika,
+                               napaka=None)
     else:
         IDurnika = modeli.vrniIDurnika(IDleta, datumLeta)[0]
         print(IDurnika)
         zasedenost = modeli.preveriZasedenostSedezev(IDurnika)[0]
         stSedezev = modeli.steviloSedezev(IDleta)[0]
+
         if zasedenost < stSedezev:
             modeli.zasediSedez(IDurnika)
-            return template('novPotnik.html', ime = None, priimek = None, emso = None,
-                        drzava = None,email = None, napaka = None,
-                    datumLeta = datumLeta, odhodnoLetalisce = odhodnoLetalisce, prihodnoLetalisce = prihodnoLetalisce, IDleta = IDleta, IDurnika = IDurnika)
+            return oblikujTemplate('novPotnik.html',
+                                   ime=None, priimek=None, emso=None,
+                                   drzava=None,email=None, napaka=None,
+                                   datumLeta=datumLeta,
+                                   odhodnoLetalisce=odhodnoLetalisce, prihodnoLetalisce=prihodnoLetalisce,
+                                   IDleta=IDleta, IDurnika=IDurnika)
         else:
-            return template('novPotnik.html', ime = None, priimek = None, emso = None,
-                        drzava = None,email = None, napaka = 'Izbrani datum je zaseden - vrnite se na prejšnjo stran in izberite nov datum',
-                    datumLeta = datumLeta, odhodnoLetalisce = odhodnoLetalisce, prihodnoLetalisce = prihodnoLetalisce, IDleta = IDleta)
+            return oblikujTemplate('novPotnik.html',
+                                   napaka='Izbrani datum je zaseden - vrnite se na prejšnjo stran in izberite nov datum',
+                                   ime=None, priimek=None, emso=None,
+                                   drzava=None, email=None,
+                                   datumLeta=datumLeta,
+                                   odhodnoLetalisce=odhodnoLetalisce, prihodnoLetalisce=prihodnoLetalisce,
+                                   IDleta=None, IDurnika=None)
             
-
-
 
 @post('/dodaj')
 def dodaj():
-    ime = request.forms.ime
+    ime     = request.forms.ime
     priimek = request.forms.priimek
-    emso = request.forms.emso
-    drzava = request.forms.drzava
-    email = request.forms.email
-    idPotnika = modeli.vrniIDpotnika(ime,priimek,emso,drzava,email)
-    if idPotnika is None:
-        try :
-            modeli.dodajPotnika(ime, priimek, emso, drzava, email)
-            idPotnika = modeli.vrniIDpotnika(ime,priimek,emso,drzava,email)
-        except Exception as e:
-            return template('novPotnik.html', ime = ime, priimek = priimek, emso = emso,
-                        drzava = drzava, email = email, napaka = e)
+    emso    = request.forms.emso
+    drzava  = request.forms.drzava
+    email   = request.forms.email
+    idPotnika = modeli.vrniIDpotnika(ime, priimek, emso, drzava, email)
 
-    IDpotnika = str(idPotnika[0])
-    IDurnika = request.forms.IDurnika
     datumLeta = request.forms.datumLeta
     odhodnoLetalisce = request.forms.odhodnoLetalisce
     prihodnoLetalisce = request.forms.prihodnoLetalisce
-    IDleta = request.forms.IDleta
+    IDleta   = request.forms.IDleta
     IDurnika = request.forms.IDurnika
+
+    if idPotnika is None:
+        try:
+            modeli.dodajPotnika(ime, priimek, emso, drzava, email)
+            idPotnika = modeli.vrniIDpotnika(ime, priimek, emso, drzava, email)
+        except Exception as e:
+            return oblikujTemplate('novPotnik.html',
+                                   napaka=e,
+                                   ime=ime, priimek=priimek, emso=emso,
+                                   drzava=drzava, email=email,
+                                   datumLeta=datumLeta,
+                                   odhodnoLetalisce=odhodnoLetalisce, prihodnoLetalisce=prihodnoLetalisce,
+                                   IDleta=IDleta, IDurnika=IDurnika)
+
+    IDpotnika = str(idPotnika[0])
     print(datumLeta, odhodnoLetalisce, prihodnoLetalisce, IDleta)
-    pot=IDpotnika+'&'+datumLeta+'&'+odhodnoLetalisce+'&'+prihodnoLetalisce+'&'+IDleta+'&'+IDurnika
+    pot = IDpotnika + '&' + datumLeta + '&' + odhodnoLetalisce + '&' + prihodnoLetalisce + '&' + IDleta + '&' + IDurnika
     redirect('/opravljenaRezervacija/' + str(pot))
     
 
@@ -152,14 +218,27 @@ def rezervacija(pot):
     odhodnoLetalisceIme=modeli.vrniDestinacijo(odhodnoLetalisce)[0]
     prihodnoLetalisceIme=modeli.vrniDestinacijo(prihodnoLetalisce)[0]
     
-    modeli.urnikInPotnik(IDpotnika,IDurnika,referencnaSt)
+    modeli.urnikInPotnik(IDpotnika, IDurnika, referencnaSt)
     
-    return template('opravljenaRezervacija.html', ime = ime, priimek = priimek, emso = emso, drzava = modeli.vrniDrzavo(IDdrzave)[0], email = email,
-                    datumLeta = novDatum, odhodnoLetalisce=odhodnoLetalisceIme, prihodnoLetalisce=prihodnoLetalisceIme, referencnaSt = referencnaSt, napaka = napaka)
-       
-    
-        
-        
+    return oblikujTemplate('opravljenaRezervacija.html',
+                           ime=ime, priimek=priimek,
+                           emso=emso, drzava=modeli.vrniDrzavo(IDdrzave)[0],
+                           email=email,
+                           datumLeta=novDatum,
+                           odhodnoLetalisce=odhodnoLetalisceIme, prihodnoLetalisce=prihodnoLetalisceIme,
+                           referencnaSt=referencnaSt, napaka=napaka)
+
+
+
+@get('/udobje')
+def destinacije():
+    nastaviAktivniGumbMenuja("gumbUdobje")
+    return oblikujTemplate('udobje.html')
+
+@get('/podjetje')
+def destinacije():
+    nastaviAktivniGumbMenuja("gumbPodjetje")
+    return oblikujTemplate('podjetje.html')
        
 ##@get('/oseba/<emso>')
 ##def oOsebi(emso):

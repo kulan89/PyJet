@@ -1,42 +1,41 @@
 %rebase ('osnova.html', naslov='Opravljena rezarvacija', navigator='/ opravljenaRezervacija')
 
-    <div class="naslov_strani">
-       Rezervacija je uspešno opravljena!
-    </div>
+    <h1>
+       Rezervacija je uspeÅ¡no opravljena!
+    </h1>
     
-    <div class="vrstica">
+    <p>
         Podatki o rezervaciji :
-    </div>
+    </p>
     <div>
         <form>
           <fieldset style="width:300px" autofocus required>
             <legend>Podatki o potniku:</legend>
             Ime: <input type="text" value="{{ime}}" ><br>
             Priimek: <input type="text" value="{{priimek}}" ><br>
-            EMŠO: <input type="text" value="{{emso}}" ><br>
-            Drava: <input type="text" value="{{drzava}}" ><br>
+            EMÅ O: <input type="text" value="{{emso}}" ><br>
+            DrÅ¾ava: <input type="text" value="{{drzava}}" ><br>
             Email: <input type="text" value="{{email}}" ><br>
           </fieldset>
           
           <fieldset style="width:300px">
             <legend>Podatki o rezerviranem letu:</legend>
             Datum Leta: <input type="text" name="datumLeta" value="{{datumLeta}}" ><br>
-            Odhodno letališèe: <input type="text" name="odhodnoLetalisce" value="{{odhodnoLetalisce}}" ><br>
-            Prihodno letališèe: <input type="text" name="prihodnoLetalisce" value="{{prihodnoLetalisce}}" ><br>
+            Odhodno letaliÅ¡Äe: <input type="text" name="odhodnoLetalisce" value="{{odhodnoLetalisce}}" ><br>
+            Prihodno letaliÅ¡Äe: <input type="text" name="prihodnoLetalisce" value="{{prihodnoLetalisce}}" ><br>
           </fieldset>
-          
-                   
         </form>
                 
         <form action="mailto:{{email}}" method="post" enctype="text/plain">
         <fieldset style="width:500px">
-        <legend> Referenèna številka rezerviranega leta:</legend>
-        Referenèna številka:<input type="text" name="referencnaSt" value="{{referencnaSt}}" ><br>
+        <legend> ReferenÄna Å¡tevilka rezerviranega leta:</legend>
+        ReferenÄna Å¡tevilka:<input type="text" name="referencnaSt" value="{{referencnaSt}}" ><br>
         <br>
-        S klikom na spodnji gumb bo na Vaš E-mail poslana referenèna številka
+        S klikom na spodnji gumb bo na VaÅ¡ E-mail poslana referenÄna Å¡tevilka
         s katero boste lahko na uvodni strani preverili informacije o rezerviranem letu.<br>  
         <br>
-        <input type="submit" value="Pošlji">
+        <input type="submit" value="PoÅ lji">
+        </fieldset>
         </form>
         
     </div>

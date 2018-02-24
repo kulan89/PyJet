@@ -1,4 +1,4 @@
-%rebase ('osnova.html', naslov='PyJet', navigator='/')
+%rebase ('osnova.html', naslov='PyJet - Rezervacija', navigator='/')
 
 <head>
   <script language="JavaScript">
@@ -11,15 +11,10 @@
     };
   </script>
 </head>
-<body>
-<div class="naslov_strani">
-    Destinacija
-</div>
+<body class="">
+<h1>Destinacija</h1>
 
 <div id="destinacija" class="vrstica">
-
-
-
     <fieldset>
     <form id="formOdhod" method="POST">Izberi odhodno letališče:<br>
 
@@ -44,11 +39,9 @@
                 </li>
             %end
         </select>
-        <br>
-     </fieldset>
-        <button type="submit" {{!'disabled' if not get('prihodnaLetaliscaOmogoceno', False) else ''}}>Potrdi</button>
     </form>
-
+    </fieldset>
+    <button onClick="formDestinacija.submit()" {{!'disabled' if not get('prihodnaLetaliscaOmogoceno', False) else ''}}>Potrdi</button>
 </div>
 
 </body>
