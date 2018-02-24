@@ -128,21 +128,21 @@ def steviloSedezev(id_leta):
 def preveriZasedenostSedezev(id_urnika):
     '''preveri zasedenost leta z izbranim id-jem urnika'''
     cur.execute("""
-        SELECT Zasedenost FROM Urnik WHERE ID = ?""", (id_urnika))
+        SELECT Zasedenost FROM Urnik WHERE ID = ?""", (id_urnika,))
     return cur.fetchone()
 
 def zasediSedez(id_urnika):
     '''zasedemo samo, če imamo prosto mesto'''
 
-    zasedenost = preveriZasedenostSedezev(id_urnika)
-    stSedezev = steviloSedezev(vrniIDleta2(id_urnika))
+    zasedenost = preveriZasedenostSedezev(id_urnika)[0]
+    stSedezev = steviloSedezev(vrniIDleta2(id_urnika)[0])[0]
     if zasedenost + 1 > stSedezev:
         return None
     else:
         cur.execute("""
             UPDATE Urnik
             SET Zasedenost = ? + 1
-            WHERE ID = ?""",(preveriZasedenost(id_urnika)[0],id_urnika))
+            WHERE ID = ?""",(preveriZasedenostSedezev(id_urnika)[0],id_urnika))
         con.commit()
 
 def vrniIDurnika(id_leta, datum):
@@ -184,11 +184,11 @@ def vrniUro(id_leta):
         WHERE ID = ?""",(id_leta,))
     return cur.fetchone()    
 
-def dodajNovLet(dan,mesec,leto,id_leta):
+def dodajNovLet(datum,id_leta):
     '''doda nov let za izbrano destinacijo in izbrani datum'''
     cur.execute("""
         INSERT INTO Urnik (IDleta, Datum, Zasedenost)
-        VALUES (?,?,?)""", (id_leta, str(leto+'-'+mesec+'-'+dan),1))
+        VALUES (?,?,?)""", (id_leta, datum,1))
     con.commit()
 
     
