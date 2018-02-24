@@ -152,7 +152,7 @@ def rezervacija(pot):
     odhodnoLetalisceIme=modeli.vrniDestinacijo(odhodnoLetalisce)[0]
     prihodnoLetalisceIme=modeli.vrniDestinacijo(prihodnoLetalisce)[0]
     
-    modeli.urnikInPotnik(IDpotnika,IDurnika)
+    modeli.urnikInPotnik(IDpotnika,IDurnika,referencnaSt)
     
     return template('opravljenaRezervacija.html', ime = ime, priimek = priimek, emso = emso, drzava = modeli.vrniDrzavo(IDdrzave)[0], email = email,
                     datumLeta = novDatum, odhodnoLetalisce=odhodnoLetalisceIme, prihodnoLetalisce=prihodnoLetalisceIme, referencnaSt = referencnaSt, napaka = napaka)
