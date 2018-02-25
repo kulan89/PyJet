@@ -217,6 +217,8 @@ def rezervacija(pot):
     leto, mesec, dan = datumLeta.split('-')
     novDatum = dan+'-'+mesec+'-'+leto
     ime, priimek, emso, IDdrzave, email = modeli.vrniPotnika(IDpotnika)
+    uraLeta = modeli.vrniUro(IDleta)[0]
+    
 
     odhodnoLetalisceIme=modeli.vrniDestinacijo(odhodnoLetalisce)[0]
     prihodnoLetalisceIme=modeli.vrniDestinacijo(prihodnoLetalisce)[0]
@@ -229,7 +231,7 @@ def rezervacija(pot):
                            email=email,
                            datumLeta=novDatum,
                            odhodnoLetalisce=odhodnoLetalisceIme, prihodnoLetalisce=prihodnoLetalisceIme,
-                           referencnaSt=referencnaSt, napaka=napaka)
+                           referencnaSt=referencnaSt, uraLeta = uraLeta, napaka=napaka)
 
 
 
