@@ -191,6 +191,31 @@ def dodajNovLet(datum,id_leta):
         VALUES (?,?,?)""", (id_leta, datum,1))
     con.commit()
 
+def IDpotnikainIDurnika(referencnaSt):
+    cur.execute("""
+        SELECT IDpotnika,IDurnika FROM Razpored
+        WHERE referencnaSt = ?""",(referencnaSt,))
+    return cur.fetchall()
+
+def IDletaDatum(IDurnika):
+    '''vrne IDleta in datum leta'''
+    cur.execute("""
+        SELECT IDleta,Datum FROM Urnik
+        WHERE ID = ?""",(IDurnika,))
+    return cur.fetchall()
+
+def informacijeOLetu(IDleta):
+    '''vrne ID odhodnega, ID prihodnega, tip letala in uro leta'''
+    cur.execute("""
+        SELECT Odhod,Prihod,Letalo,UraLeta FROM Let
+        WHERE ID = ?""",(IDleta,))
+    return cur.fetchall()
+
+def vseReferencne():
+    '''vrne seznam vseh referencnih stevilk'''
+    cur.execute("""
+        SELECT ReferencnaST FROM Razpored""")
+    return cur.fetchall()
 
 
     
