@@ -8,6 +8,7 @@ glavniMenuAktivniGumb=""
 glavniMenuTemplate = '''<li><a {gumbRezervacija} href="/izbiraDestinacije" >Rezervacija leta</a></li>
         <li><a {gumbDestinacije} href="/destinacije">Destinacije</a></li>
         <li><a {gumbUdobje} href="/udobje">Za vaše udobje</a></li>
+         <li><a {gumbReferencna} href="/referencna">Informacije o rezerviranem letu</a></li>
         <li><a {gumbPodjetje} href="/podjetje">O podjetju</a></li>'''
 
 def nastaviAktivniGumbMenuja(gumb):
@@ -24,6 +25,8 @@ def glavniMeni(**kwargs):
             glavniMenu = glavniMenu.format_map(defaultdict(str, gumbRezervacija='class="active"'))
         elif kwargs["aktivniGumb"] == "gumbUdobje":
             glavniMenu = glavniMenu.format_map(defaultdict(str, gumbUdobje='class="active"'))
+        elif kwargs["aktivniGumb"] == "gumbReferencna":
+            glavniMenu = glavniMenu.format_map(defaultdict(str, gumbReferencna='class="active"'))
         elif kwargs["aktivniGumb"] == "gumbPodjetje":
             glavniMenu = glavniMenu.format_map(defaultdict(str, gumbPodjetje='class="active"'))
     return glavniMenu
@@ -234,6 +237,34 @@ def rezervacija(pot):
 def destinacije():
     nastaviAktivniGumbMenuja("gumbUdobje")
     return oblikujTemplate('udobje.html')
+
+@get('/referencna')
+def destinacije():
+    nastaviAktivniGumbMenuja("gumbReferencna")
+    return oblikujTemplate('referencna.html',refSt = None, napaka = None)
+
+@get('/informacijeOLetu')
+def informacije():
+    refSt = request.query['refSt']
+    referencne = modeli.vseReferencne()
+    sezReferencnih = [elt[0] for elt in referencne]
+    if refSt not in sezReferencnih:
+        napaka= 'Vnešena referenčna številka je napačna'
+        return oblikujTemplate('referencna.html',refSt = None, napaka=napaka)
+    
+        
+    IDpotnika, IDurnika = modeli.IDpotnikainIDurnika(refSt)[0]
+    ime,priimek,emso,IDdrzave,email = modeli.vrniPotnika(IDpotnika)
+    IDleta, datumLeta = modeli.IDletaDatum(IDurnika)[0]
+    leto, mesec, dan = datumLeta.split('-')
+    novDatum = dan+'-'+mesec+'-'+leto
+    IDodhod,IDprihod,letalo,uraLeta = modeli.informacijeOLetu(IDleta)[0]
+    odhodnoLetalisce = modeli.vrniDestinacijo(IDodhod)[0]
+    prihodnoLetalisce = modeli.vrniDestinacijo(IDprihod)[0]
+    
+    return oblikujTemplate('informacijeOLetu.html', refSt=refSt, ime=ime, priimek=priimek, emso=emso,
+                           datumLeta = novDatum,uraLeta=uraLeta, odhodnoLetalisce=odhodnoLetalisce, prihodnoLetalisce=prihodnoLetalisce)
+    
 
 @get('/podjetje')
 def destinacije():
