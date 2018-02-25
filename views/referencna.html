@@ -1,0 +1,21 @@
+%rebase ('osnova.html', naslov='PyJet - Za vaše udobje', navigator='/')
+
+<div class="opis">
+    <h1>Preveri informacije o rezerviranem letu</h1>
+    <hr>
+    <p>S pomočjo referenčne številke, ki ste jo prejeli ob rezervaciji potovanja lahko preverite informacije o rezerviranem letu.</p>
+    <br>
+    <form method="get" action="/informacijeOLetu">
+        <fieldset class="glava" style="width:150px; border:0px" autofocus required>
+        <legend>Vnesi referenčno številko:</legend>
+                <input type="text" name="refSt" value="{{refSt}}"/><br>
+                <br>
+                %if napaka is not None:
+                <div class="vrstica napaka">
+                Napaka: {{napaka}}
+                </div>
+                %end
+                <br>
+                <input type="submit" value="Preveri informacije o letu" name="preveri" class="gumbi"/>
+        </fieldset>
+</div>
