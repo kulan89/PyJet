@@ -1,18 +1,26 @@
 %rebase ('osnova.html', naslov='PyJet - Za vaše udobje', navigator='/')
 
 <div class="opis">
-    <fieldset style="width:300px" autofocus required>
-    <legend>Informacije o rezervaciji:</legend>
-            Referenčna številka: <input type="text" value="{{refSt}}" ><br>
-            <br>
+<h1>Informacije o rezervaciji za referenčno številko "{{refSt}}"</h1>
+    <form>
+    <fieldset style="width:300px;" autofocus required>
+    <legend>Potnik:</legend>
             Ime: <input type="text" value="{{ime}}" ><br>
             Priimek: <input type="text" value="{{priimek}}" ><br>
             EMŠO: <input type="text" value="{{emso}}" ><br>
             <br>
-            Datum Leta: <input type="text" name="datumLeta" value="{{datumLeta}}" ><br>
-            Ura Leta: <input type="text" name="uraLeta" value="{{uraLeta}}" ><br>
+    </fieldset>
+    
+    <fieldset style="width:300px;" autofocus required>
+    <legend>Informacije o rezerviranem letu:</legend>
+            Datum Leta:<br>
+            <input type="text" name="datumLeta" value="{{datumLeta}}" ><br>
+            Ura Leta: <br>
+            <input type="text" name="uraLeta" value="{{uraLeta}}" ><br>
+            <br>
             Odhodno letališče: <input type="text" name="odhodnoLetalisce" value="{{odhodnoLetalisce}}" ><br>
             Prihodno letališče: <input type="text" name="prihodnoLetalisce" value="{{prihodnoLetalisce}}" ><br>
      </fieldset>
+     </form>
     
 </div>

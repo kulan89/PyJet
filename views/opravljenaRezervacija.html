@@ -9,7 +9,7 @@
     </p>
     <div>
         <form>
-          <fieldset style="width:300px" autofocus required>
+          <fieldset style="width:300px; border:0px" autofocus required>
             <legend>Podatki o potniku:</legend>
             Ime: <input type="text" value="{{ime}}" ><br>
             Priimek: <input type="text" value="{{priimek}}" ><br>
@@ -18,14 +18,18 @@
             Email: <input type="text" value="{{email}}" ><br>
           </fieldset>
           
-          <fieldset style="width:300px">
+          <fieldset style="width:300px; border:0px">
             <legend>Podatki o rezerviranem letu:</legend>
-            Datum Leta: <input type="text" name="datumLeta" value="{{datumLeta}}" ><br>
+            Datum Leta:<br>
+            <input type="text" name="datumLeta" value="{{datumLeta}}" ><br>
+            Ura Leta: <br>
+            <input type="text" name="uraLeta" value="{{uraLeta}}" ><br>
             Odhodno letališče: <input type="text" name="odhodnoLetalisce" value="{{odhodnoLetalisce}}" ><br>
             Prihodno letališče: <input type="text" name="prihodnoLetalisce" value="{{prihodnoLetalisce}}" ><br>
           </fieldset>
         </form>
                 
+      <form>
         <fieldset style="width:500px">
         <legend> Referenčna številka rezerviranega leta:</legend>
         Referenčna številka:<input type="text" name="referencnaSt" value="{{referencnaSt}}" ><br>
@@ -33,7 +37,7 @@
         S pomočjo izpisane referenčne številke boste lahko na uvodni strani 
         preverili informacije o rezerviranem letu.<br>  
         <br>
-        <input type="submit" value="PoŠlji">
         </fieldset>
+     </form>
         
     </div>
