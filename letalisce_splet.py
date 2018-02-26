@@ -6,9 +6,9 @@ import hashlib
 
 glavniMenuAktivniGumb=""
 glavniMenuTemplate = '''<li><a {gumbRezervacija} href="/izbiraDestinacije" >Rezervacija leta</a></li>
+        <li><a {gumbReferencna} href="/referencna">Informacije o rezerviranem letu</a></li>
         <li><a {gumbDestinacije} href="/destinacije">Destinacije</a></li>
         <li><a {gumbUdobje} href="/udobje">Za vaše udobje</a></li>
-         <li><a {gumbReferencna} href="/referencna">Informacije o rezerviranem letu</a></li>
         <li><a {gumbPodjetje} href="/podjetje">O podjetju</a></li>'''
 
 def nastaviAktivniGumbMenuja(gumb):
@@ -133,13 +133,15 @@ def dodajNovegaPotnika():
 
     #print(datumLeta, datumi1)
 
+    drzave = modeli.vseDrzave()
+    drzave.insert(0, (-1, "Izberi Državo"))
     if datumLeta not in datumi1:
         modeli.dodajNovLet(datumLeta,IDleta)
         IDurnika = modeli.vrniIDurnika(IDleta, datumLeta)[0]
         print(IDurnika)
         return oblikujTemplate('novPotnik.html',
                                ime=None, priimek=None, emso=None,
-                               drzava=None,
+                               drzave=drzave,
                                email=None,
                                datumLeta=datumLeta,
                                odhodnoLetalisce=odhodnoLetalisce, prihodnoLetalisce=prihodnoLetalisce,
@@ -155,7 +157,7 @@ def dodajNovegaPotnika():
             modeli.zasediSedez(IDurnika)
             return oblikujTemplate('novPotnik.html',
                                    ime=None, priimek=None, emso=None,
-                                   drzava=None,email=None, napaka=None,
+                                   drzave=drzave,email=None, napaka=None,
                                    datumLeta=datumLeta,
                                    odhodnoLetalisce=odhodnoLetalisce, prihodnoLetalisce=prihodnoLetalisce,
                                    IDleta=IDleta, IDurnika=IDurnika)
@@ -163,7 +165,7 @@ def dodajNovegaPotnika():
             return oblikujTemplate('novPotnik.html',
                                    napaka='Izbrani datum je zaseden - vrnite se na prejšnjo stran in izberite nov datum',
                                    ime=None, priimek=None, emso=None,
-                                   drzava=None, email=None,
+                                   drzave=drzave, email=None,
                                    datumLeta=datumLeta,
                                    odhodnoLetalisce=odhodnoLetalisce, prihodnoLetalisce=prihodnoLetalisce,
                                    IDleta=None, IDurnika=None)
@@ -171,12 +173,12 @@ def dodajNovegaPotnika():
 
 @post('/dodaj')
 def dodaj():
-    ime     = request.forms.ime
-    priimek = request.forms.priimek
-    emso    = request.forms.emso
-    drzava  = request.forms.drzava
-    email   = request.forms.email
-    idPotnika = modeli.vrniIDpotnika(ime, priimek, emso, drzava, email)
+    ime       = request.forms.ime
+    priimek   = request.forms.priimek
+    emso      = request.forms.emso
+    idDrzave  = int(request.forms.drzava_id)
+    email     = request.forms.email
+    idPotnika = modeli.vrniIDpotnika(ime, priimek, emso, idDrzave, email)
 
     datumLeta = request.forms.datumLeta
     odhodnoLetalisce = request.forms.odhodnoLetalisce
@@ -184,15 +186,21 @@ def dodaj():
     IDleta   = request.forms.IDleta
     IDurnika = request.forms.IDurnika
 
+
+
     if idPotnika is None:
         try:
-            modeli.dodajPotnika(ime, priimek, emso, drzava, email)
-            idPotnika = modeli.vrniIDpotnika(ime, priimek, emso, drzava, email)
+            modeli.dodajPotnika(ime, priimek, emso, idDrzave, email)
+            idPotnika = modeli.vrniIDpotnika(ime, priimek, emso, idDrzave, email)
         except Exception as e:
+            drzave = modeli.vseDrzave()
+            if idDrzave < 0:
+                drzave.insert(0, (-1, "Izberi Državo"))
             return oblikujTemplate('novPotnik.html',
                                    napaka=e,
                                    ime=ime, priimek=priimek, emso=emso,
-                                   drzava=drzava, email=email,
+                                   drzave=drzave, izbranaDrzava=idDrzave,
+                                   email=email,
                                    datumLeta=datumLeta,
                                    odhodnoLetalisce=odhodnoLetalisce, prihodnoLetalisce=prihodnoLetalisce,
                                    IDleta=IDleta, IDurnika=IDurnika)
@@ -272,6 +280,10 @@ def informacije():
 def destinacije():
     nastaviAktivniGumbMenuja("gumbPodjetje")
     return oblikujTemplate('podjetje.html')
+
+
+
+
        
 ##@get('/oseba/<emso>')
 ##def oOsebi(emso):

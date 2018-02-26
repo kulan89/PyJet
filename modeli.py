@@ -92,18 +92,18 @@ def vrniIDdrzave(drzava):
         WHERE Ime = ?""", (drzava,))
     return cur.fetchone()
 
-def dodajPotnika(ime, priimek, emso, drzava, email):
+def dodajPotnika(ime, priimek, emso, idDrzave, email):
     cur.execute("""
         INSERT INTO Potnik (Ime, Priimek, EMSO, IDdrzave, Email)
         VALUES (?,?,?,?,?)
-        """,(ime,priimek,emso,vrniIDdrzave(drzava)[0], email))
+        """,(ime, priimek, emso, idDrzave, email))
     con.commit()
 
-def vrniIDpotnika(ime,priimek,emso,drzava,email):
+def vrniIDpotnika(ime,priimek,emso,idDrzave,email):
     try:
         cur.execute("""
               SELECT ID FROM Potnik
-              WHERE Ime = ? AND Priimek=? AND EMSO = ? AND IDdrzave = ? AND Email = ?""", (ime,priimek,emso,vrniIDdrzave(drzava)[0],email))
+              WHERE Ime = ? AND Priimek=? AND EMSO = ? AND IDdrzave = ? AND Email = ?""", (ime, priimek, emso, idDrzave, email))
         return cur.fetchone()
     except:
         return None
@@ -215,6 +215,14 @@ def vseReferencne():
     '''vrne seznam vseh referencnih stevilk'''
     cur.execute("""
         SELECT ReferencnaST FROM Razpored""")
+    return cur.fetchall()
+
+def vseDrzave():
+    '''vrne vse države v bazi'''
+
+    cur.execute("""
+            SELECT ID,Ime FROM Drzava
+            """)
     return cur.fetchall()
 
 
