@@ -219,11 +219,17 @@ def vseReferencne():
 
 def vseDrzave():
     '''vrne vse države v bazi'''
-
     cur.execute("""
             SELECT ID,Ime FROM Drzava
             """)
     return cur.fetchall()
+
+def vrniIDurnika2(id_potnika):
+    cur.execute("""
+            SELECT IDurnika FROM Razpored
+            WHERE IDpotnika = ?""", (id_potnika,))
+    return cur.fetchall()
+
 
 
     

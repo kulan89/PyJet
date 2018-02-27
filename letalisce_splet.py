@@ -15,7 +15,7 @@ def nastaviAktivniGumbMenuja(gumb):
     global glavniMenuAktivniGumb
     glavniMenuAktivniGumb = gumb
 
-# glavniMeni(aktivniGumb="gumbDestinacije")
+
 def glavniMeni(**kwargs):
     glavniMenu = glavniMenuTemplate
     if kwargs is not None and "aktivniGumb" in kwargs:
@@ -43,24 +43,9 @@ def pretvoriDatum(x):
     else:
         return datetime.strftime(x, "%d.%m.%Y")
 
-##def dobiSeznamOdhodnihLetalisc():
-##    odhodnaLetalisca = modeli.OdhodnaLetalisca()
-##    mesta = []
-##    for elt in odhodnaLetalisca:
-##        mesta.append(elt[0])
-##    return mesta
-
 def dobiSeznamOdhodnihLetalisc():
     odhodnaLetalisca = modeli.OdhodnaLetalisca()
     return odhodnaLetalisca
-
-##def dobiSeznamPrihodnihLetalisc(izhodisce):
-##    prihodnaLetalisca = modeli.PrihodnaLetalisca(izhodisce)
-##    mesta = []
-##    for elt in prihodnaLetalisca:
-##        mesta.append(elt[0])
-##    return mesta
-
 
 def dobiSeznamPrihodnihLetalisc(izhodisceId):
     prihodnaLetalisca = modeli.PrihodnaLetalisca(izhodisceId)
@@ -114,7 +99,6 @@ def datumLeta():
     odhod  = modeli.vrniDestinacijo(odhodnoLetalisce)[0]
     prihod = modeli.vrniDestinacijo(prihodnoLetalisce)[0]
     IDleta = modeli.vrniIDleta(odhodnoLetalisce, prihodnoLetalisce)
-    #print(odhodnoLetalisce, prihodnoLetalisce, IDleta)
 
     return oblikujTemplate('datumLeta.html',
                            odhod=odhod, prihod=prihod,
@@ -131,14 +115,11 @@ def dodajNovegaPotnika():
     datumi = modeli.vrniDatume(IDleta)
     datumi1 = [elt[0] for elt in datumi]
 
-    #print(datumLeta, datumi1)
-
     drzave = modeli.vseDrzave()
     drzave.insert(0, (-1, "Izberi Državo"))
     if datumLeta not in datumi1:
         modeli.dodajNovLet(datumLeta,IDleta)
         IDurnika = modeli.vrniIDurnika(IDleta, datumLeta)[0]
-        print(IDurnika)
         return oblikujTemplate('novPotnik.html',
                                ime=None, priimek=None, emso=None,
                                drzave=drzave,
@@ -149,7 +130,6 @@ def dodajNovegaPotnika():
                                napaka=None)
     else:
         IDurnika = modeli.vrniIDurnika(IDleta, datumLeta)[0]
-        print(IDurnika)
         zasedenost = modeli.preveriZasedenostSedezev(IDurnika)[0]
         stSedezev = modeli.steviloSedezev(IDleta)[0]
 
@@ -187,7 +167,6 @@ def dodaj():
     IDurnika = request.forms.IDurnika
 
 
-
     if idPotnika is None:
         try:
             modeli.dodajPotnika(ime, priimek, emso, idDrzave, email)
@@ -206,10 +185,31 @@ def dodaj():
                                    odhodnoLetalisce=odhodnoLetalisce, prihodnoLetalisce=prihodnoLetalisce,
                                    IDleta=IDleta, IDurnika=IDurnika)
 
+
     IDpotnika = str(idPotnika[0])
-    print(datumLeta, odhodnoLetalisce, prihodnoLetalisce, IDleta)
     pot = IDpotnika + '&' + datumLeta + '&' + odhodnoLetalisce + '&' + prihodnoLetalisce + '&' + IDleta + '&' + IDurnika
-    redirect('/opravljenaRezervacija/' + str(pot))
+    hashPoti = hashlib.md5(pot.encode())
+    referencnaSt = hashPoti.hexdigest()[:10]
+    referencne = modeli.vseReferencne()
+    sezReferencnih = [elt[0] for elt in referencne]
+
+
+    if referencnaSt in sezReferencnih:
+        napaka = 'Let je na izbrani destinaciji za vnešenega potnika že rezerviran'
+        drzave = modeli.vseDrzave()
+        if idDrzave < 0:
+            drzave.insert(0, (-1, "Izberi Državo"))
+        return oblikujTemplate('novPotnik.html',
+                                   napaka=napaka,
+                                   ime=ime, priimek=priimek, emso=emso,
+                                   drzave=drzave,izbranaDrzava=idDrzave,
+                                   email=email,
+                                   datumLeta=datumLeta,
+                                   odhodnoLetalisce=odhodnoLetalisce, prihodnoLetalisce=prihodnoLetalisce,
+                                   IDleta=IDleta, IDurnika=IDurnika)
+    else:
+        redirect('/opravljenaRezervacija/' + str(pot))
+
     
 
 @get('/opravljenaRezervacija/<pot>')
@@ -220,7 +220,6 @@ def rezervacija(pot):
 
     hashPoti = hashlib.md5(pot.encode())
     referencnaSt = hashPoti.hexdigest()[:10]
-    #print(referencnaSt)
     
     IDpotnika, datumLeta, odhodnoLetalisce, prihodnoLetalisce, IDleta, IDurnika = pot.split('&')
     leto, mesec, dan = datumLeta.split('-')
@@ -241,7 +240,6 @@ def rezervacija(pot):
                            datumLeta=novDatum,
                            odhodnoLetalisce=odhodnoLetalisceIme, prihodnoLetalisce=prihodnoLetalisceIme,
                            referencnaSt=referencnaSt, uraLeta = uraLeta, napaka=napaka)
-
 
 
 @get('/udobje')
@@ -282,72 +280,6 @@ def destinacije():
     nastaviAktivniGumbMenuja("gumbPodjetje")
     return oblikujTemplate('podjetje.html')
 
-
-
-
-       
-##@get('/oseba/<emso>')
-##def oOsebi(emso):
-##    napaka = request.query.napaka
-##    if not napaka:
-##        napaka = None
-##    emso, ime, priimek, ulica, hisna_st, postna_st, posta = modeli.poisciEMSO(emso)
-##    racuni = modeli.racunEMSO(emso)
-##    return template('oseba.html', emso = emso, ime = ime, priimek = priimek,
-##                    ulica = ulica, hisna_st = hisna_st, postna_st = postna_st,
-##                    posta = posta, racuni = racuni, pretvori = pretvoriDatum,
-##                    napaka = napaka)
-##
-##@get('/isci')
-##def isci():
-##    priimek = request.query.iskalniNiz
-##    rezultat = modeli.poisciPriimek(priimek)
-##    return template('isci.html', rezultat = rezultat)
-##
-##@post('/dodaj')
-##def dodaj():
-##    emso = request.forms.emso
-##    ime = request.forms.ime
-##    priimek = request.forms.priimek
-##    ulica = request.forms.ulica
-##    hisna_st = request.forms.hisna_st
-##    postna_st = request.forms.postna_st
-##    kraj = request.forms.kraj
-##    try:
-##        if not modeli.dodajOsebo(ime, priimek, emso, ulica, hisna_st, postna_st):
-##            modeli.dodajKraj(postna_st, kraj)
-##            modeli.dodajOsebo(ime, priimek, emso, ulica, hisna_st, postna_st)
-##    except Exception as e:
-##        return template('glavni.html', ime = ime, priimek = priimek, emso = emso,
-##                        ulica = ulica, hisna_st = hisna_st, postna_st = postna_st,
-##                        kraj = kraj, napaka = e)
-##    redirect('/oseba/' + emso)
-##
-##@post('/polog/<racun>')
-##def polog(racun):
-##    emso, = modeli.emsoRacun(racun)
-##    try:
-##        znesek = int(request.forms.znesek)
-##    except Exception as e:
-##        redirect('/oseba/' + emso + '?napaka=Neveljaven znesek!')
-##    if znesek <= 0:
-##        redirect('/oseba/' + emso + '?napaka=Znesek mora biti pozitiven!')
-##    else:
-##        modeli.dodajTransakcijo(racun, znesek)
-##        redirect('/oseba/' + emso)
-##
-##@post('/dvig/<racun>')
-##def dvig(racun):
-##    emso, = modeli.emsoRacun(racun)
-##    try:
-##        znesek = int(request.forms.znesek)
-##    except Exception as e:
-##        redirect('/oseba/' + emso + '?napaka=Neveljaven znesek!')
-##    if znesek <= 0:
-##        redirect('/oseba/' + emso + '?napaka=Znesek mora biti pozitiven!')
-##    else:
-##        modeli.dodajTransakcijo(racun, -znesek)
-##        redirect('/oseba/' + emso)
 
 # poženemo strežnik na portu 8080, glej http://localhost:8080/
 run(host='localhost', port=8080, reloader=False)
