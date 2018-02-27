@@ -2,11 +2,6 @@
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-%if napaka is not None:
-<div class="vrstica napaka">
-    Napaka: {{napaka}}
-</div>
-%end
 
 <h1>Vnesi podatke o potniku</h1>
 <div>
@@ -24,6 +19,12 @@
                     </select><br>
             Email: <input type="text" name="email" value="{{email}}"/><br>
         </fieldset>
+		
+		%if napaka is not None:
+		<div class="vrstica napaka">
+		Napaka: {{napaka}}
+		</div>
+		%end
 
         <input type="hidden" name="datumLeta" value="{{datumLeta}}"/>
         <input type="hidden" name="prihodnoLetalisce" value="{{prihodnoLetalisce}}"/>

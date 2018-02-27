@@ -192,7 +192,8 @@ def dodaj():
         try:
             modeli.dodajPotnika(ime, priimek, emso, idDrzave, email)
             idPotnika = modeli.vrniIDpotnika(ime, priimek, emso, idDrzave, email)
-        except Exception as e:
+        except:
+            e = 'Prosimo vnesite vse podatke'
             drzave = modeli.vseDrzave()
             if idDrzave < 0:
                 drzave.insert(0, (-1, "Izberi Državo"))
